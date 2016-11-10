@@ -93,7 +93,7 @@ public class UIScript : MonoBehaviour
                 }
                 mainMenu = false;
             }
-            else
+            else if (offMenu == false) //cant open both menus at once
             {
                 mainMenu = true;
             }
@@ -111,7 +111,7 @@ public class UIScript : MonoBehaviour
                 }
                 offMenu = false;
             }
-            else
+            else if (mainMenu == false) //cant open both menus at once
             {
                 offMenu = true;
             }
