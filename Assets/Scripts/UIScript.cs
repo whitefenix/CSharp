@@ -7,8 +7,6 @@ public class UIScript : MonoBehaviour
 
     /* TODO:
      * Fix displaying selected/not selected instrument in the menu so its not hard coded
-     * Set "Accept" key (probably enter)
-     *          This might mean breaking out the close menu script?
      * Fix proper sprites/images for everything
      * Discuss healthbar
      * Set tooltips (Julia?)
@@ -107,13 +105,7 @@ public class UIScript : MonoBehaviour
             //Turn menu on if it was off, close it if it was on
             if (mainMenu == true)
             {
-                if (currentMain != mainMenuPos)
-                {
-                    currentMain = mainMenuPos;
-                    mainHand = mainInstruments[currentMain];
-                    mainMenuPos = 0;
-                }
-                mainMenu = false;
+                closeMainMenu();
             }
             else if (offMenu == false) //cant open both menus at once
             {
@@ -125,13 +117,7 @@ public class UIScript : MonoBehaviour
             //Turn menu on if it was off, close it if it was on
             if (offMenu == true)
             {
-                if (currentOff != offMenuPos)
-                {
-                    currentOff = offMenuPos;
-                    offHand = offInstruments[currentOff];
-                    offMenuPos = 0;
-                }
-                offMenu = false;
+                closeOffMenu();
             }
             else if (mainMenu == false) //cant open both menus at once
             {
@@ -142,12 +128,24 @@ public class UIScript : MonoBehaviour
 
     void closeMainMenu()
     {
-
+        if (currentMain != mainMenuPos)
+        {
+            currentMain = mainMenuPos;
+            mainHand = mainInstruments[currentMain];           
+        }
+        mainMenuPos = 0;
+        mainMenu = false;
     }
 
     void closeOffMenu()
     {
-
+        if (currentOff != offMenuPos)
+        {
+            currentOff = offMenuPos;
+            offHand = offInstruments[currentOff];     
+        }
+        offMenuPos = 0;
+        offMenu = false;
     }
 
     void OnGUI()
