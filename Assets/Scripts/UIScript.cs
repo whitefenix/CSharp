@@ -133,7 +133,7 @@ public class UIScript : MonoBehaviour
             currentMain = mainMenuPos;
             mainHand = mainInstruments[currentMain];           
         }
-        mainMenuPos = 0;
+        mainMenuPos = currentMain;
         mainMenu = false;
     }
 
@@ -144,7 +144,7 @@ public class UIScript : MonoBehaviour
             currentOff = offMenuPos;
             offHand = offInstruments[currentOff];     
         }
-        offMenuPos = 0;
+        offMenuPos = currentOff;
         offMenu = false;
     }
 
