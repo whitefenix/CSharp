@@ -4,6 +4,16 @@ using System.Collections;
 public class UIScript : MonoBehaviour
 {
 
+
+    /* TODO:
+     * Fix displaying selected/not selected instrument in the menu so its not hard coded
+     * Set "Accept" key (probably enter)
+     *          This might mean breaking out the close menu script?
+     * Fix proper sprites/images for everything
+     * Discuss healthbar
+     * Set tooltips (Julia?)
+     */
+
     public Texture[] mainInstruments, smallMain, smallMainSel, offInstruments, smallOff, smallOffSel;
     public Texture mainHand, offHand;
 
@@ -25,6 +35,18 @@ public class UIScript : MonoBehaviour
 
     void InputHandler()
     {
+        if (Input.GetKeyDown(KeyCode.Return) == true)
+        {
+            if (mainMenu)
+            {
+                closeMainMenu();
+            }
+            else if (offMenu)
+            {
+                closeOffMenu();
+            }
+
+        }
         if (Input.GetKeyDown(KeyCode.K) == true)
         {
             if (mainMenu)
@@ -116,6 +138,16 @@ public class UIScript : MonoBehaviour
                 offMenu = true;
             }
         }
+    }
+
+    void closeMainMenu()
+    {
+
+    }
+
+    void closeOffMenu()
+    {
+
     }
 
     void OnGUI()
