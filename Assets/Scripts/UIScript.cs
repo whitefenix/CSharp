@@ -12,12 +12,15 @@ public class UIScript : MonoBehaviour
      * Set tooltips (Julia?)
      */
 
-    public Texture[] mainInstruments, smallMain, smallMainSel, offInstruments, smallOff, smallOffSel;
-    public Texture mainHand, offHand;
+    //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
 
-    private bool mainMenu = false;
-    private bool offMenu = false;
+    public Texture[] mainInstruments, smallMain, smallMainSel, offInstruments, smallOff, smallOffSel; //texture arrays for all available menu icons
+    public Texture mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed?
 
+    //true if the menu is open
+    private bool mainMenu = false, offMenu = false;
+
+    //position in menu, number of instruments, index of equipped instrument
     private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
     void Start()
@@ -31,6 +34,9 @@ public class UIScript : MonoBehaviour
         InputHandler();
     }
 
+    /*
+     * Deals with all user input
+     */
     void InputHandler()
     {
         if (Input.GetKeyDown(KeyCode.Return) == true)
@@ -126,6 +132,9 @@ public class UIScript : MonoBehaviour
         }
     }
 
+    /*
+     * Closes mainhand (left) menu, either by hitting the menu key again or Enter/Return
+     */
     void closeMainMenu()
     {
         if (currentMain != mainMenuPos)
@@ -137,6 +146,9 @@ public class UIScript : MonoBehaviour
         mainMenu = false;
     }
 
+    /*
+     * Closes offhand (right) menu, either by hitting the menu key again or Enter/Return
+     */
     void closeOffMenu()
     {
         if (currentOff != offMenuPos)
@@ -148,12 +160,15 @@ public class UIScript : MonoBehaviour
         offMenu = false;
     }
 
+    /*
+     * All the GUI objects to be rendered 
+     */
     void OnGUI()
     {
-        //main hand
+        //mainhand slot
         GUI.Box(new Rect(100, Screen.height - 200, 200, 200), mainHand, GUIStyle.none);
 
-        //off hand
+        //offhand slot
         GUI.Box(new Rect(Screen.width - 300, Screen.height - 200, 200, 200), offHand, GUIStyle.none); 
 
         if (mainMenu)
@@ -161,6 +176,7 @@ public class UIScript : MonoBehaviour
             GUI.Box(new Rect(50, Screen.height - 250, 300, 75), "");
 
             //TODO: For loop for every instrument
+            //TODO: Display tooltip for "smallMainSel[x]"
             if (mainMenuPos == 0)
             {
                 GUI.Box(new Rect(75, Screen.height - 260, 100, 100), smallMainSel[0], GUIStyle.none);
@@ -177,6 +193,8 @@ public class UIScript : MonoBehaviour
         {
             GUI.Box(new Rect(Screen.width - 350, Screen.height - 250, 300, 75), "");
 
+            //TODO: For loop for every instrument. 
+            //TODO: Display tooltip for "smallOffSel[x]"
             if (offMenuPos == 0)
             {
                 GUI.Box(new Rect(Screen.width - 325, Screen.height - 260, 100, 100), smallOffSel[0], GUIStyle.none);
@@ -190,7 +208,11 @@ public class UIScript : MonoBehaviour
            
         }
 
-        //hearts
+       /* hearts
+        * looks like shit right now so is not displayed.
+        * Five boxes between the instruments
+        * Should probably be switched to a lifebar? Idfk
+        */
         /*
         GUI.Box(new Rect(Screen.width - 375, Screen.height - 125, 50, 50), "");
         GUI.Box(new Rect(Screen.width - 475, Screen.height - 125, 50, 50), "");
