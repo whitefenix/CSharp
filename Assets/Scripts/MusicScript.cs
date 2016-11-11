@@ -3,6 +3,14 @@ using System.Collections;
 
 public class MusicScript : MonoBehaviour {
 
+    /*
+     *TODO:
+     * Fix restarting music (resume from where you were instead of restarting every time)
+     * Crossfades when switching instead of abrupt stops
+     * Maybe consider a different code structure? Not sure if this inheritance system is good or not.
+     * Fix fighting to actually do something 
+     */
+
     public AudioSource source1;
     public AudioSource source2;
     public AudioSource source3;
