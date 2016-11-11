@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+    //set to true if enemy is nearby, false otherwise
+    public bool fighting = false;
+
 	public float speed = 6.0F;
 	public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
@@ -25,6 +28,11 @@ public class PlayerController : MonoBehaviour {
 		//Use Terrain only
 		layerMask = (1 << 8);
 	}
+
+    bool isFighting()
+    {
+        return fighting;
+    }
 
 	void Update() 
 	{
