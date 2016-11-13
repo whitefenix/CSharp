@@ -5,10 +5,7 @@ public class MusicScript : MonoBehaviour {
 
     /*
      *TODO:
-     * Fix restarting music (resume from where you were instead of restarting every time)
      * Crossfades when switching instead of abrupt stops
-     * Maybe consider a different code structure? Not sure if this inheritance system is good or not.
-     * Fix fighting to actually do something 
      */
 
     public AudioSource source1;
@@ -18,21 +15,39 @@ public class MusicScript : MonoBehaviour {
     public AudioClip clip2;
     public AudioClip clip3;
 
-    public PlayerController player;
-    public UIScript ui;
+    private float musictime;
+
+    private PlayerController playercontrol;
+    private UIScript ui;
 
     // Use this for initialization
     void Start () {
+
+        musictime = 0.0f;
         source1.clip = clip1;
         source2.clip = clip2;
         source3.clip = clip3;
         source1.Play(); //1 is piano, always playing
         source2.Play(); //2 is violin, 3 is drums which are turned on when violin is off
+
+        GameObject theplayer = GameObject.Find("Player");
+        playercontrol = theplayer.GetComponent<PlayerController>();
+        ui = theplayer.GetComponent<UIScript>();
     }
 	
-	// Update is called once per frame
+	//Update is called once per frame
 	void Update () {
-        bool fight = player.fighting;
+        bool fight = playercontrol.fighting;    
+        /*
+         * Calculate position in the music
+         */
+        float freq = (float)source1.clip.frequency;
+        int sample = source1.timeSamples;
+        float deltatime = (float)sample / freq;
+        if (deltatime > 0.5f)
+        {
+            musictime = deltatime;
+        }
 
         //changes when fight is checked
         if (fight && source1.isPlaying) //if we are fighting we get silenced
@@ -40,30 +55,34 @@ public class MusicScript : MonoBehaviour {
             source1.Stop();
             source2.Stop();
             source3.Stop();
+            source1.time = musictime;
+            source2.time = musictime;
+            source3.time = musictime;
         }
-        if (!fight && !source1.isPlaying) //if we are not fighting we get sound back
+        else if (!fight && !source1.isPlaying) //if we are not fighting we get sound back
         {
             source1.Play();
             source2.Play();
         }
 
         //changes when we unequip the violin
-        if (ui.mainHand != ui.mainInstruments[0] && source2.isPlaying) //if we havent equipped te violin, change to drums
+        else if (!fight && !ui.mainHand.instrumentName.Equals("Violin") && source2.isPlaying) //if we havent equipped te violin, change to drums
         {
             source1.Stop();
             source2.Stop();
+            source1.time = musictime;
+            source3.time = musictime;
             source1.Play();
             source3.Play();
         }
-        else if (ui.mainHand == ui.mainInstruments[0] && !source2.isPlaying ) //if we change back, change to violin
+        else if (!fight && ui.mainHand.instrumentName.Equals("Violin") && !source2.isPlaying ) //if we change back, change to violin
         {
-            source1.Stop();
-            source3.Stop();
-            source1.Play();
-            source2.Play();
+             source1.Stop();
+             source3.Stop();
+             source1.time = musictime;
+             source2.time = musictime;
+             source1.Play();
+             source2.Play();
         }
-
-
-	
 	}
 }
