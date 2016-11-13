@@ -19,11 +19,17 @@ public class UIScript : MonoBehaviour
     //position in menu, number of instruments, index of equipped instrument
     private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
+    //tooltip formatting
+    private GUIStyle tooltipStyle = "box";
+   
     void Start()
     {
         //TODO: This will need to be changed if we ever get more instruments in the game
         num_offInstruments = offInstruments.Length;
         num_mainInstruments = mainInstruments.Length;
+
+        //tooltip formatting
+        tooltipStyle.wordWrap = true;
     }
 
     //called every frame
@@ -177,8 +183,9 @@ public class UIScript : MonoBehaviour
             {
                 if (mainMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //TODO: This is the selected instrument: Display tooltip for "mainInstruments[i]", which is the same instrument
+                    //TODO: This is the selected instrument: Write proper tooltip for "mainInstruments[i]", which is the same instrument
                     //but different icon from smallMain[i] and smallMainSel[i]. Check inspector for this script to see what index is what instrument currently
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
                     GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), smallMainSel[i], GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
@@ -198,7 +205,9 @@ public class UIScript : MonoBehaviour
             {
                 if (offMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //TODO: Selected instrument for offhand so put tooltip here, same deal as mainhand above
+                    //TODO: Selected instrument for offhand write proper tooltip here, same deal as mainhand above
+                    // in the offHand, the harp is pre-selected and thus have index 0, giving the violin index 1 
+                    GUI.Box(new Rect(offSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
                     GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), smallOffSel[i], GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
@@ -224,6 +233,6 @@ public class UIScript : MonoBehaviour
     }
 }
 
-///Author(s): Samuel Ekne
+///Author(s): Samuel Ekne, Julia von Heijne
 ///Date: 10-11-2016
-///Last revision: 11-11-2016
+///Last revision: 13-11-2016
