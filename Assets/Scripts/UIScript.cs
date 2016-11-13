@@ -6,12 +6,22 @@ public class UIScript : MonoBehaviour
     /* TODO:
      * Fix proper sprites/images for everything
      * Discuss healthbar
-     * Set tooltips (Julia?)
      */
 
+    [System.Serializable]
+    public class Instrument
+    {
+        public Texture mainTexture;
+        public Texture smallTexture;
+        public Texture selectedTexture;
+        public string instrumentName;
+        public string tooltip;
+    }
+
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
-    public Texture[] mainInstruments, smallMain, smallMainSel, offInstruments, smallOff, smallOffSel; //texture arrays for all available menu icons
-    public Texture mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
+    public Instrument[] mainhandInstruments;
+    public Instrument[] offhandInstruments;
+    public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
 
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
@@ -19,17 +29,13 @@ public class UIScript : MonoBehaviour
     //position in menu, number of instruments, index of equipped instrument
     private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
-    //tooltip formatting
-    private GUIStyle tooltipStyle = "box";
-   
     void Start()
     {
         //TODO: This will need to be changed if we ever get more instruments in the game
-        num_offInstruments = offInstruments.Length;
-        num_mainInstruments = mainInstruments.Length;
-
-        //tooltip formatting
-        tooltipStyle.wordWrap = true;
+        num_offInstruments = offhandInstruments.Length;
+        num_mainInstruments = mainhandInstruments.Length;
+        mainHand = mainhandInstruments[currentMain];
+        offHand = offhandInstruments[currentOff];
     }
 
     //called every frame
@@ -141,7 +147,7 @@ public class UIScript : MonoBehaviour
         if (currentMain != mainMenuPos)
         {
             currentMain = mainMenuPos;
-            mainHand = mainInstruments[currentMain];
+            mainHand = mainhandInstruments[currentMain];
         }
         mainMenuPos = currentMain;
         mainMenu = false;
@@ -155,7 +161,7 @@ public class UIScript : MonoBehaviour
         if (currentOff != offMenuPos)
         {
             currentOff = offMenuPos;
-            offHand = offInstruments[currentOff];
+            offHand = offhandInstruments[currentOff];
         }
         offMenuPos = currentOff;
         offMenu = false;
@@ -166,11 +172,15 @@ public class UIScript : MonoBehaviour
      */
     void OnGUI()
     {
+        //tooltip formatting
+        GUIStyle tooltipStyle = "box";
+        tooltipStyle.wordWrap = true;
+
         //mainhand slot
-        GUI.Box(new Rect(100, Screen.height - 200, 200, 200), mainHand, GUIStyle.none);
+        GUI.Box(new Rect(100, Screen.height - 200, 200, 200), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
 
         //offhand slot
-        GUI.Box(new Rect(Screen.width - 300, Screen.height - 200, 200, 200), offHand, GUIStyle.none);
+        GUI.Box(new Rect(Screen.width - 300, Screen.height - 200, 200, 200), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
         if (mainMenu)
         {
@@ -186,11 +196,11 @@ public class UIScript : MonoBehaviour
                     //TODO: This is the selected instrument: Write proper tooltip for "mainInstruments[i]", which is the same instrument
                     //but different icon from smallMain[i] and smallMainSel[i]. Check inspector for this script to see what index is what instrument currently
                     GUI.Box(new Rect(mainSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), smallMainSel[i], GUIStyle.none);
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
                 {
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), smallMain[i], GUIStyle.none);
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), mainhandInstruments[i].smallTexture, GUIStyle.none);
                 }
                 mainSpacing += 125;
             }
@@ -208,11 +218,11 @@ public class UIScript : MonoBehaviour
                     //TODO: Selected instrument for offhand write proper tooltip here, same deal as mainhand above
                     // in the offHand, the harp is pre-selected and thus have index 0, giving the violin index 1 
                     GUI.Box(new Rect(offSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
-                    GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), smallOffSel[i], GUIStyle.none);
+                    GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
                 {
-                    GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), smallOff[i], GUIStyle.none);
+                    GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), offhandInstruments[i].smallTexture, GUIStyle.none);
                 }
                 offSpacing -= 125;
             }
