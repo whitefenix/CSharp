@@ -21,7 +21,7 @@ public class UIScript : MonoBehaviour
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public Instrument[] mainhandInstruments;
     public Instrument[] offhandInstruments;
-    public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
+    [HideInInspector] public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
 
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
