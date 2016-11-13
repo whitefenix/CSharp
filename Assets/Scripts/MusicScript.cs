@@ -18,8 +18,8 @@ public class MusicScript : MonoBehaviour {
     private float musictime;
 	private int enemiesInCombatRange;
 
-//	private float combatSilenceTime = 1.0f;
-//	private float lastCombatTime;
+	private float combatSilenceTime = 1.0f;
+	private float lastCombatTime;
 
     private UIScript ui;
 
@@ -40,8 +40,8 @@ public class MusicScript : MonoBehaviour {
 	//Update is called once per frame
 	void Update () {
 
-//		if (Time.time >= lastCombatTime)
-//			enemiesInCombatRange = 0;
+		if (Time.time >= lastCombatTime)
+			enemiesInCombatRange = 0;
 
 		bool fight = (enemiesInCombatRange > 0);
 			
@@ -93,11 +93,19 @@ public class MusicScript : MonoBehaviour {
         }
 	}
 
+	void OnTriggerStay(Collider other)
+	{
+		if (Attack.IsEnemyCollider(other)) 
+		{
+			lastCombatTime = Time.time + combatSilenceTime;
+		}
+	}
+
 	void OnTriggerEnter (Collider other) 
 	{
-		if (other.tag == "Attackable" && !other.isTrigger) 
+		if (Attack.IsEnemyCollider(other)) 
 		{
-//			lastCombatTime = Time.time + combatSilenceTime;
+			lastCombatTime = Time.time + combatSilenceTime;
 
 			enemiesInCombatRange++;
 		}
@@ -105,7 +113,7 @@ public class MusicScript : MonoBehaviour {
 
 	void OnTriggerExit (Collider other) 
 	{
-		if (other.tag == "Attackable" && !other.isTrigger) 
+		if (Attack.IsEnemyCollider(other)) 
 		{
 			enemiesInCombatRange--;
 		}

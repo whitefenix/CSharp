@@ -41,7 +41,7 @@ public class Health : MonoBehaviour {
 	{
 		currentHealth -= value;
 
-		//Debug.Log (this.name + " is loosing Health (" + currentHealth + "/" + maximumHealth + ")");
+		Debug.Log (this.name + " is loosing Health (" + currentHealth + "/" + maximumHealth + ")");
 
 		lastHitTime = Time.time;
 

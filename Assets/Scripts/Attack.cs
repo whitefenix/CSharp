@@ -58,7 +58,7 @@ public class Attack : MonoBehaviour {
 
 	void OnTriggerEnter (Collider other) 
 	{
-		if (other.tag == "Attackable" && !other.isTrigger && !reachableEnemies.Contains (other.gameObject)) 
+		if (IsEnemyCollider(other) && !reachableEnemies.Contains (other.gameObject)) 
 		{
 			reachableEnemies.Add (other.gameObject);
 
@@ -69,7 +69,7 @@ public class Attack : MonoBehaviour {
 
 	void OnTriggerExit (Collider other) 
 	{
-		if (other.tag == "Attackable" && !other.isTrigger && reachableEnemies.Contains (other.gameObject)) 
+		if (IsEnemyCollider(other) && reachableEnemies.Contains (other.gameObject)) 
 		{
 			reachableEnemies.Remove (other.gameObject);
 
@@ -130,5 +130,10 @@ public class Attack : MonoBehaviour {
 		}
 
 		return closest;
+	}
+
+	public static bool IsEnemyCollider(Collider other)
+	{
+		return other.tag == "Attackable" && !other.isTrigger;
 	}
 }
