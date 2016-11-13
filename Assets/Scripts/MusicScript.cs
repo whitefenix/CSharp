@@ -16,8 +16,11 @@ public class MusicScript : MonoBehaviour {
     public AudioClip clip3;
 
     private float musictime;
+	private int enemiesInCombatRange;
 
-    private PlayerController playercontrol;
+//	private float combatSilenceTime = 1.0f;
+//	private float lastCombatTime;
+
     private UIScript ui;
 
     // Use this for initialization
@@ -31,13 +34,17 @@ public class MusicScript : MonoBehaviour {
         source2.Play(); //2 is violin, 3 is drums which are turned on when violin is off
 
         GameObject theplayer = GameObject.Find("Player");
-        playercontrol = theplayer.GetComponent<PlayerController>();
         ui = theplayer.GetComponent<UIScript>();
     }
 	
 	//Update is called once per frame
 	void Update () {
-        bool fight = playercontrol.fighting;    
+
+//		if (Time.time >= lastCombatTime)
+//			enemiesInCombatRange = 0;
+
+		bool fight = (enemiesInCombatRange > 0);
+			
         /*
          * Calculate position in the music
          */
@@ -84,5 +91,23 @@ public class MusicScript : MonoBehaviour {
              source1.Play();
              source2.Play();
         }
+	}
+
+	void OnTriggerEnter (Collider other) 
+	{
+		if (other.tag == "Attackable" && !other.isTrigger) 
+		{
+//			lastCombatTime = Time.time + combatSilenceTime;
+
+			enemiesInCombatRange++;
+		}
+	}
+
+	void OnTriggerExit (Collider other) 
+	{
+		if (other.tag == "Attackable" && !other.isTrigger) 
+		{
+			enemiesInCombatRange--;
+		}
 	}
 }
