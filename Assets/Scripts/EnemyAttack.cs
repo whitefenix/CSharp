@@ -3,8 +3,10 @@ using System.Collections;
 
 public class EnemyAttack : MonoBehaviour {
 
-	public float damage;
-	public float attackSpeed = 1f;
+	//damage per hit
+	public float damage = 5.0f;
+	//Hits per second
+	public float attackSpeed = 0.5f;
 
 	private bool playerInRange = false;
 
@@ -25,7 +27,7 @@ public class EnemyAttack : MonoBehaviour {
 		{
 			DealDamage (player);
 
-			attackTimeout = Time.time + attackSpeed;
+			attackTimeout = Time.time + (1.0f / attackSpeed);
 		}
 	}
 
