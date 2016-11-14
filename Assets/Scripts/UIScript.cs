@@ -11,11 +11,13 @@ public class UIScript : MonoBehaviour
     [System.Serializable]
     public class Instrument
     {
+        //TODO: Maybe implement variables for attack mode? 
         public Texture mainTexture;
         public Texture smallTexture;
         public Texture selectedTexture;
         public string instrumentName;
         public string tooltip;
+        public Attack.Mode inMode;
     }
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
@@ -29,6 +31,8 @@ public class UIScript : MonoBehaviour
     //position in menu, number of instruments, index of equipped instrument
     private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
+    private Attack attack;
+
     void Start()
     {
         //TODO: This will need to be changed if we ever get more instruments in the game
@@ -36,6 +40,9 @@ public class UIScript : MonoBehaviour
         num_mainInstruments = mainhandInstruments.Length;
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
+
+        GameObject theplayer = GameObject.Find("Player");
+        attack = theplayer.GetComponentInChildren<Attack>();
     }
 
     //called every frame
@@ -148,6 +155,8 @@ public class UIScript : MonoBehaviour
         {
             currentMain = mainMenuPos;
             mainHand = mainhandInstruments[currentMain];
+            attack.currentAttackMode = mainHand.inMode;
+            //Debug.Log(mainHand.inMode);
         }
         mainMenuPos = currentMain;
         mainMenu = false;
