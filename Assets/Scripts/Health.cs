@@ -13,6 +13,8 @@ public class Health : MonoBehaviour {
 
 	private bool dead;
 
+	public GameObject valueLabel;
+
 	public float health 
 	{
 		get { return currentHealth; }
@@ -45,6 +47,9 @@ public class Health : MonoBehaviour {
 
 		lastHitTime = Time.time;
 
+		if (valueLabel != null)
+			SpawnLabel (value, Color.red);
+
 		if (currentHealth <= 0)
 			Die ();
 	}
@@ -54,7 +59,19 @@ public class Health : MonoBehaviour {
 		if (!isDead) 
 		{
 			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
+
+			if (valueLabel != null)
+				SpawnLabel (value, Color.green);
 		}
+	}
+
+	private void SpawnLabel(float value, Color color)
+	{
+		GameObject label = (GameObject)Instantiate (valueLabel, gameObject.transform.position, Quaternion.identity);
+		TextMesh text = label.GetComponent<TextMesh> ();
+
+		text.text = value.ToString ();
+		text.color = color;
 	}
 
 	private void VisualizeDamage()

@@ -4,14 +4,40 @@ using System.Collections.Generic;
 
 public class Attack : MonoBehaviour {
 
+	private const int NUM_MODES = 2;
 	public enum Mode {
 		SINGLE = 0,
-		MULTI
+		AOE_ROW
 	}
 
-	public float damage;
-	public Mode currentAttack = Mode.SINGLE;
-	public float attackSpeed = 0.2f;
+	//Used collider
+	public Collider[] attackCollidersPerMode = new Collider[NUM_MODES];
+	//Damage per hit
+	public float[] attackDamagePerMode = new float[NUM_MODES] {
+		10.0f,
+		5.0f
+	};
+	//Hits per second
+	public float[] attackSpeedPerMode = new float[NUM_MODES] {
+		2.0f,
+		1.0f
+	};
+
+	private Mode currentAttack = Mode.SINGLE;
+
+	public Mode currentAttackMode {
+		get 
+		{  
+			return currentAttack; 
+		}
+		set 
+		{
+			currentAttack = value;
+
+			//Enable correct collider
+			OnSwitchAttackMode ();
+		}
+	}
 
 	private double attackTimeout;
 
@@ -24,10 +50,27 @@ public class Attack : MonoBehaviour {
 		reachableEnemies = new List<GameObject> ();
 		killedEnemies = new List<GameObject> ();
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate () 
+
+	void Update ()
 	{
+		//TODO delete DEBUG
+		if (Input.GetKeyDown(KeyCode.X))
+		{
+//			int mode = (int)currentAttackMode;
+//			mode ^= 1;
+//
+//			currentAttackMode = (Mode)mode;
+
+			if (currentAttack.Equals (Mode.SINGLE))
+				currentAttackMode = Mode.AOE_ROW;
+			else
+				currentAttackMode = Mode.SINGLE;
+		}	
+//	}
+//	
+//	// Update is called once per frame
+//	void FixedUpdate () 
+//	{
 		if (Time.time >= attackTimeout && Input.GetKeyDown (KeyCode.Space)) 
 		{
 			switch(currentAttack) 
@@ -40,19 +83,28 @@ public class Attack : MonoBehaviour {
 					DealDamage (closestEnemy);
 				}
 				break;
-			case Mode.MULTI:
+
+			case Mode.AOE_ROW:
 
 				foreach (GameObject enemy in reachableEnemies) 
 				{
-					Debug.Log ("Deal Damage to " + enemy.name);
-
 					DealDamage (enemy);
 				}
 				break;
 			}
 
 			RemoveKilledEnemiesFromList ();
-			attackTimeout = Time.time + attackSpeed;
+			attackTimeout = Time.time + (1.0f / attackSpeedPerMode[(int)currentAttackMode]);
+		}
+	}
+
+	private void OnSwitchAttackMode()
+	{
+		int mode = (int)currentAttack;
+
+		for(int i = 0; i < attackCollidersPerMode.Length; ++i)
+		{
+			attackCollidersPerMode [i].enabled = (i == mode);
 		}
 	}
 
@@ -92,7 +144,7 @@ public class Attack : MonoBehaviour {
 	{
 		Health enemyHealth = enemy.GetComponent<Health> ();
 
-		enemyHealth.damage (damage);
+		enemyHealth.damage (attackDamagePerMode[(int)currentAttackMode]);
 
 		if (enemyHealth.isDead)
 			killedEnemies.Add (enemy);//reachableEnemies.Remove (enemy);
