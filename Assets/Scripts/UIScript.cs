@@ -35,7 +35,6 @@ public class UIScript : MonoBehaviour
 
     void Start()
     {
-        //TODO: This will need to be changed if we ever get more instruments in the game
         num_offInstruments = offhandInstruments.Length;
         num_mainInstruments = mainhandInstruments.Length;
         mainHand = mainhandInstruments[currentMain];
@@ -48,6 +47,14 @@ public class UIScript : MonoBehaviour
     //called every frame
     void Update()
     {
+        if (mainMenu || offMenu)
+        {
+            Time.timeScale = 0.1f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
         InputHandler();
     }
 
