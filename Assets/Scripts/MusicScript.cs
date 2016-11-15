@@ -52,7 +52,7 @@ public class MusicScript : MonoBehaviour {
         {
             if (source1.volume < startVolume)
             {
-               currentVolume += 0.1f * Time.deltaTime;
+               currentVolume += 0.4f * Time.deltaTime;
                 source1.volume = currentVolume;
                 source2.volume = currentVolume;
                 source3.volume = currentVolume;
@@ -82,14 +82,17 @@ public class MusicScript : MonoBehaviour {
         //changes when fight is checked
         if (fight && source1.isPlaying) //if we are fighting we get silenced
         {
-            source1.Stop();
-            source2.Stop();
-            source3.Stop();
+            if (source1.volume > 0.05f)
+            {
+                source1.volume -= 0.6f * Time.deltaTime;
+                source2.volume -= 0.6f * Time.deltaTime;
+                source3.volume -= 0.6f * Time.deltaTime;
+            }
             source1.time = musictime;
             source2.time = musictime;
             source3.time = musictime;
         }
-        else if (!fight && !source1.isPlaying) //if we are not fighting we get sound back
+        else if (!fight && source1.volume < 1.0f && fadeIn == false) //if we are not fighting we get sound back
         {
             source1.volume = 0.0f;
             source1.volume = 0.0f;
