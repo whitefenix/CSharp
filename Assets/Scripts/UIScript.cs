@@ -33,13 +33,17 @@ public class UIScript : MonoBehaviour
 
     private Attack attack;
 
+    private Light lights;
+
     void Start()
     {
-        //TODO: This will need to be changed if we ever get more instruments in the game
         num_offInstruments = offhandInstruments.Length;
         num_mainInstruments = mainhandInstruments.Length;
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
+
+        GameObject lightsource = GameObject.Find("Directional Light");
+        lights = lightsource.GetComponent<Light>();
 
         GameObject theplayer = GameObject.Find("Player");
         attack = theplayer.GetComponentInChildren<Attack>();
@@ -48,6 +52,23 @@ public class UIScript : MonoBehaviour
     //called every frame
     void Update()
     {
+        if (mainMenu || offMenu)
+        {
+            Time.timeScale = 0.1f;
+            if (lights.intensity > 0.1f)
+            {
+                lights.intensity -= 5.0f * Time.deltaTime;
+            }
+            
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+            if (lights.intensity < 1.0f)
+            {
+                lights.intensity += 0.5f * Time.deltaTime;
+            }
+        }
         InputHandler();
     }
 

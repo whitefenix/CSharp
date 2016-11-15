@@ -15,6 +15,9 @@ public class MusicScript : MonoBehaviour {
     public AudioClip clip2;
     public AudioClip clip3;
 
+    public float startVolume = 1.0f;
+    private float currentVolume = 1.0f;
+
     private float musictime;
 	private int enemiesInCombatRange;
 
@@ -23,6 +26,8 @@ public class MusicScript : MonoBehaviour {
 
     private UIScript ui;
 
+    private bool fadeIn = false;
+
     // Use this for initialization
     void Start () {
 
@@ -30,6 +35,9 @@ public class MusicScript : MonoBehaviour {
         source1.clip = clip1;
         source2.clip = clip2;
         source3.clip = clip3;
+        source1.volume = startVolume;
+        source2.volume = startVolume;
+        source3.volume = startVolume;
         source1.Play(); //1 is piano, always playing
         source2.Play(); //2 is violin, 3 is drums which are turned on when violin is off
 
@@ -39,6 +47,21 @@ public class MusicScript : MonoBehaviour {
 	
 	//Update is called once per frame
 	void Update () {
+
+        if (fadeIn)
+        {
+            if (source1.volume < startVolume)
+            {
+               currentVolume += 0.1f * Time.deltaTime;
+                source1.volume = currentVolume;
+                source2.volume = currentVolume;
+                source3.volume = currentVolume;
+            }
+            else
+            {
+                fadeIn = false;
+            }
+        }
 
 		if (Time.time >= lastCombatTime)
 			enemiesInCombatRange = 0;
@@ -68,8 +91,13 @@ public class MusicScript : MonoBehaviour {
         }
         else if (!fight && !source1.isPlaying) //if we are not fighting we get sound back
         {
+            source1.volume = 0.0f;
+            source1.volume = 0.0f;
+            source1.volume = 0.0f;
+            currentVolume = 0.0f;
             source1.Play();
             source2.Play();
+            fadeIn = true;
         }
 
         //changes when we unequip the violin
