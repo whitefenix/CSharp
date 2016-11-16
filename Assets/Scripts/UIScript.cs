@@ -213,14 +213,15 @@ public class UIScript : MonoBehaviour
         GUIStyle tooltipStyle = "box";
         tooltipStyle.wordWrap = true;
 
+        //mainhand slot
+        GUI.Box(new Rect((Screen.width / 12) + 22, Screen.height - 240, 200, Screen.height / 6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
+
+        //offhand slot
+        GUI.Box(new Rect(9 * (Screen.width / 12) + 78, Screen.height - 235, 200, Screen.height / 6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
+
         //basic UI
         GUI.Box(new Rect(Screen.width/16, Screen.height - 300, Screen.width, Screen.height/3), mainUI, GUIStyle.none);
 
-        //mainhand slot
-        GUI.Box(new Rect((Screen.width/12)+22, Screen.height - 240, 200, Screen.height/6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
-
-        //offhand slot
-        GUI.Box(new Rect(9*(Screen.width/12)+80, Screen.height - 240, 200, Screen.height/6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
         if (mainMenu)
         {
