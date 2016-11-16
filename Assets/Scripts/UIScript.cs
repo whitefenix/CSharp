@@ -42,10 +42,11 @@ public class UIScript : MonoBehaviour
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
 
+		//TODO use UI overlay instead
         GameObject lightsource = GameObject.Find("Directional Light");
         lights = lightsource.GetComponent<Light>();
 
-        GameObject theplayer = GameObject.Find("Player");
+		GameObject theplayer = GameObject.FindWithTag("Player");
         attack = theplayer.GetComponentInChildren<Attack>();
 
 		attack.currentAttackMode = mainHand.inMode;
