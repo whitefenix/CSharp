@@ -96,7 +96,7 @@ public class MusicScript : MonoBehaviour {
         //changes when fight is checked
         if (fight && source1.isPlaying) //if we are fighting we get silenced
         {
-            if (source1.volume > 0.05f)
+            if (source1.volume > 0.1f)
             {
                 source1.volume -= 0.6f * Time.deltaTime;
                 source2.volume -= 0.6f * Time.deltaTime;

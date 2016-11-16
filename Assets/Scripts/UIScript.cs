@@ -29,7 +29,7 @@ public class UIScript : MonoBehaviour
     private bool mainMenu = false, offMenu = false;
 
     //position in menu, number of instruments, index of equipped instrument
-    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 1, currentOff = 0;
+    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
     private Attack attack;
 
@@ -180,7 +180,6 @@ public class UIScript : MonoBehaviour
             currentMain = mainMenuPos;
             mainHand = mainhandInstruments[currentMain];
             attack.currentAttackMode = mainHand.inMode;
-            //Debug.Log(mainHand.inMode);
         }
         mainMenuPos = currentMain;
         mainMenu = false;
@@ -228,7 +227,7 @@ public class UIScript : MonoBehaviour
                 {
                     //TODO: This is the selected instrument: Write proper tooltip for "mainInstruments[i]", which is the same instrument
                     //but different icon from smallMain[i] and smallMainSel[i]. Check inspector for this script to see what index is what instrument currently
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 320, 150, 50), mainhandInstruments[i].tooltip, tooltipStyle);
                     GUI.Box(new Rect(mainSpacing, Screen.height - 260, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
@@ -250,7 +249,7 @@ public class UIScript : MonoBehaviour
                 {
                     //TODO: Selected instrument for offhand write proper tooltip here, same deal as mainhand above
                     // in the offHand, the harp is pre-selected and thus have index 0, giving the violin index 1 
-                    GUI.Box(new Rect(offSpacing, Screen.height - 320, 150, 50), i.ToString() + ": tooltips (placeholder)", tooltipStyle);
+                    GUI.Box(new Rect(offSpacing, Screen.height - 320, 150, 50), offhandInstruments[i].tooltip, tooltipStyle);
                     GUI.Box(new Rect(offSpacing, Screen.height - 260, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
