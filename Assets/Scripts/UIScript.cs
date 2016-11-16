@@ -203,6 +203,20 @@ public class UIScript : MonoBehaviour
         offMenu = false;
     }
 
+	public Rect uiBars = new Rect(Screen.width / 20, Screen.height - 350, Screen.width, Screen.height / 2.5f);
+	public Rect mainhandSlot = new Rect((Screen.width / 10) - 7, Screen.height - 275, 200, Screen.height / 6);
+	public Rect offhandSlot = new Rect(9 * (Screen.width / 11)-3, Screen.height - 260, 200, Screen.height / 6);
+
+	public Rect mainhandBar = new Rect((Screen.width/32)-15, Screen.height/2+10, Screen.width/4, Screen.height/4);
+	public Rect mainhandTooltip = new Rect((Screen.width / 16 + 5)-7, Screen.height - 440, 150, 50);
+	public Rect mainhandSelected = new Rect((Screen.width / 16 + 5)-15, Screen.height - 400, 100, 100);
+	public Rect mainhandUnSelected = new Rect((Screen.width / 16 + 5)-15, Screen.height - 400, 100, 100);
+
+	public Rect offhandBar = new Rect(23*(Screen.width/32)+30, Screen.height/2+10, Screen.width / 4, Screen.height / 4);
+	public Rect offhandTooltip = new Rect((14*(Screen.width /16)+2)-20, Screen.height - 480, 150, 50);
+	public Rect offhandSelected = new Rect((14*(Screen.width /16)+2), Screen.height - 440, 100, 100);
+	public Rect offhandUnSelected = new Rect((14*(Screen.width /16)+2), Screen.height - 440, 100, 100);
+
     /*
      * All the GUI objects to be rendered. Also called every frame.
      */
@@ -213,18 +227,18 @@ public class UIScript : MonoBehaviour
         tooltipStyle.wordWrap = true;
 
         //basic UI bars (not including top bars)
-        GUI.Box(new Rect(Screen.width / 20, Screen.height - 350, Screen.width, Screen.height / 2.5f), mainUI, GUIStyle.none);
+		GUI.Box(uiBars, mainUI, GUIStyle.none);
 
         //mainhand slot
-        GUI.Box(new Rect((Screen.width / 10) - 5, Screen.height - 260, 200, Screen.height / 6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
+		GUI.Box(mainhandSlot, mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
 
         //offhand slot
-        GUI.Box(new Rect(9 * (Screen.width / 11)-10, Screen.height - 260, 200, Screen.height / 6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
+		GUI.Box(offhandSlot, offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
         if (mainMenu) //if mainhand menu is currently open
         {
             //Top mainhand menu bar (left)
-            GUI.Box(new Rect((Screen.width/32)-15, Screen.height/2+10, Screen.width/4, Screen.height/4), mainMenuTexture, GUIStyle.none);
+			GUI.Box(mainhandBar, mainMenuTexture, GUIStyle.none);
 
             //maybe need to change this to be based on screen size. Looked OK when I tested it. 
             int mainSpacing = Screen.width/16+5;
@@ -234,14 +248,14 @@ public class UIScript : MonoBehaviour
                 if (mainMenuPos == i) //if selected display selected texture/sprite
                 {
                     //Display tooltip above selected instrument
-                    GUI.Box(new Rect(mainSpacing-10, Screen.height - 480, 150, 50), mainhandInstruments[i].tooltip, tooltipStyle);
+					GUI.Box(mainhandTooltip, mainhandInstruments[i].tooltip, tooltipStyle);
                     //Display selected instrument sprite for instrument i
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
+					GUI.Box(mainhandSelected, mainhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else 
                 {
                     //Display non-selected instrument sprite in the same spot
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].smallTexture, GUIStyle.none);
+					GUI.Box(mainhandUnSelected, mainhandInstruments[i].smallTexture, GUIStyle.none);
                 }
                 mainSpacing += 150; //move to the next slot, to the right
             }
@@ -250,7 +264,7 @@ public class UIScript : MonoBehaviour
         if (offMenu) //if offhand menu is currently open
         {
             //Top offhand menu bar (right)
-            GUI.Box(new Rect(23*(Screen.width/32)+30, Screen.height/2+10, Screen.width / 4, Screen.height / 4), offMenuTexture, GUIStyle.none);
+			GUI.Box(offhandBar, offMenuTexture, GUIStyle.none);
 
             //position of first element (farthest to the left)
             int offSpacing = 14*(Screen.width /16)+2; //dont know why I need +125 here, is -= 125 evaluated first?
@@ -260,14 +274,14 @@ public class UIScript : MonoBehaviour
                 if (offMenuPos == i) //if selected display selected texture/sprite
                 {
                     //Diplay tooltip for selected instrument
-                    GUI.Box(new Rect(offSpacing-20, Screen.height - 480, 150, 50), offhandInstruments[i].tooltip, tooltipStyle);
+					GUI.Box(offhandTooltip, offhandInstruments[i].tooltip, tooltipStyle);
                     //Display selected instrument sprite
-                    GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
+					GUI.Box(offhandSelected, offhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //This instrument i is not selected
                 {
                     //Display non-selected instrument sprite
-                    GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].smallTexture, GUIStyle.none);
+					GUI.Box(offhandUnSelected, offhandInstruments[i].smallTexture, GUIStyle.none);
                 }
                 offSpacing -= 150; //move to next slot, to the left
             }

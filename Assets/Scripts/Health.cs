@@ -18,8 +18,6 @@ public class Health : MonoBehaviour {
 	private bool dead;
 
 	public GameObject valueLabel;
-	private Transform cameraCanvas;
-	private Camera mainCamera;
 
 	public float health 
 	{
@@ -34,14 +32,8 @@ public class Health : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-
 		sprite = GetComponentsInChildren<SpriteRenderer> () [0];
 		currentHealth = Mathf.Min(initialHealth, maximumHealth);
-
-		//needed to intantiate damage labels
-		GameObject go = GameObject.FindWithTag ("MainCamera");
-		mainCamera =  go.GetComponent<Camera>();
-		cameraCanvas = go.transform.FindChild ("Canvas");
 
 		dead = (health <= 0);
 	}
@@ -80,22 +72,12 @@ public class Health : MonoBehaviour {
 
 	private void SpawnLabel(float value, Color color)
 	{
-		
-
 		GameObject label = (GameObject)Instantiate (valueLabel, gameObject.transform.position, Quaternion.identity);
 
 		TextMesh text = label.GetComponent<TextMesh> ();
 
 		text.text = value.ToString ();
 		text.color = color;
-
-//		GameObject label = Instantiate (valueLabel, mainCamera.WorldToScreenPoint(gameObject.transform.position), Quaternion.identity) as GameObject;
-//		label.transform.SetParent (cameraCanvas);
-//
-//		Text text = label.GetComponent<Text> ();
-//
-//		text.text = value.ToString ();
-//		text.color = color;
 	}
 
 	private void VisualizeDamage()
