@@ -77,13 +77,20 @@ public class MusicScript : MonoBehaviour {
         int sample = baseSource.timeSamples;
         float deltatime = (float)sample / freq;
         
-        if (deltatime >= 0.5f && deltatime < baseSource.clip.length) //0.5 
+        if (deltatime >= 0.5f && deltatime < baseSource.clip.length) // >= 0.5 
         {
             musictime = deltatime;
         }
         else if (deltatime >= baseSource.clip.length)
         {
             musictime = 0.0f;
+            deltatime = 0.0f;
+            baseSource.time = musictime;
+            mainSource.time = musictime;
+            offSource.time = musictime;
+            baseSource.Play();
+            mainSource.Play();
+            offSource.Play();
         }
 
         //changes when fight is checked
