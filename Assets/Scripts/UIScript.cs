@@ -47,7 +47,7 @@ public class UIScript : MonoBehaviour
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
 
-		//TODO use UI overlay instead
+		//COMMENT use UI overlay instead - Mr. H
         GameObject lightsource = GameObject.Find("Directional Light");
         lights = lightsource.GetComponent<Light>();
 
@@ -66,8 +66,7 @@ public class UIScript : MonoBehaviour
             if (lights.intensity > 0.1f)
             {
                 lights.intensity -= 5.0f * Time.deltaTime;
-            }
-            
+            }       
         }
         else
         {
@@ -213,7 +212,7 @@ public class UIScript : MonoBehaviour
         GUIStyle tooltipStyle = "box";
         tooltipStyle.wordWrap = true;
 
-        //basic UI
+        //basic UI bars (not including top bars)
         GUI.Box(new Rect(Screen.width / 20, Screen.height - 350, Screen.width, Screen.height / 2.5f), mainUI, GUIStyle.none);
 
         //mainhand slot
@@ -222,9 +221,9 @@ public class UIScript : MonoBehaviour
         //offhand slot
         GUI.Box(new Rect(9 * (Screen.width / 11)-10, Screen.height - 260, 200, Screen.height / 6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
-        if (mainMenu)
+        if (mainMenu) //if mainhand menu is currently open
         {
-            //main menu bar
+            //Top mainhand menu bar (left)
             GUI.Box(new Rect((Screen.width/32)-15, Screen.height/2+10, Screen.width/4, Screen.height/4), mainMenuTexture, GUIStyle.none);
 
             //maybe need to change this to be based on screen size. Looked OK when I tested it. 
@@ -234,39 +233,43 @@ public class UIScript : MonoBehaviour
             {
                 if (mainMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //TODO: This is the selected instrument: Write proper tooltip for "mainInstruments[i]", which is the same instrument
-                    //but different icon from smallMain[i] and smallMainSel[i]. Check inspector for this script to see what index is what instrument currently
+                    //Display tooltip above selected instrument
                     GUI.Box(new Rect(mainSpacing-10, Screen.height - 480, 150, 50), mainhandInstruments[i].tooltip, tooltipStyle);
+                    //Display selected instrument sprite for instrument i
                     GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
-                else //otherwise display normal texture/sprite
+                else 
                 {
+                    //Display non-selected instrument sprite in the same spot
                     GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].smallTexture, GUIStyle.none);
                 }
-                mainSpacing += 150;
+                mainSpacing += 150; //move to the next slot, to the right
             }
         }
 
-        if (offMenu)
+        if (offMenu) //if offhand menu is currently open
         {
-            //off menu bar
+            //Top offhand menu bar (right)
             GUI.Box(new Rect(23*(Screen.width/32)+30, Screen.height/2+10, Screen.width / 4, Screen.height / 4), offMenuTexture, GUIStyle.none);
 
+            //position of first element (farthest to the left)
             int offSpacing = 14*(Screen.width /16)+2; //dont know why I need +125 here, is -= 125 evaluated first?
+
             for (int i = 0; i < num_offInstruments; i++)
             {
                 if (offMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //TODO: Selected instrument for offhand write proper tooltip here, same deal as mainhand above
-                    // in the offHand, the harp is pre-selected and thus have index 0, giving the violin index 1 
+                    //Diplay tooltip for selected instrument
                     GUI.Box(new Rect(offSpacing-20, Screen.height - 480, 150, 50), offhandInstruments[i].tooltip, tooltipStyle);
+                    //Display selected instrument sprite
                     GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
-                else //otherwise display normal texture/sprite
+                else //This instrument i is not selected
                 {
+                    //Display non-selected instrument sprite
                     GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].smallTexture, GUIStyle.none);
                 }
-                offSpacing -= 150;
+                offSpacing -= 150; //move to next slot, to the left
             }
         }
 
@@ -292,7 +295,6 @@ public class UIScript : MonoBehaviour
 		return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_Y);
 	}
 }
-
 ///Author(s): Samuel Ekne, Julia von Heijne
 ///Date: 10-11-2016
-///Last revision: 13-11-2016
+///Last revision: 16-11-2016

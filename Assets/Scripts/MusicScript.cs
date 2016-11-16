@@ -3,11 +3,6 @@ using System.Collections;
 
 public class MusicScript : MonoBehaviour {
 
-    /*
-     *TODO:
-     * Crossfades when switching instead of abrupt stops
-     */
-
     public AudioSource baseSource;
     public AudioSource mainSource;
     public AudioSource offSource;
@@ -86,7 +81,6 @@ public class MusicScript : MonoBehaviour {
         {
             musictime = deltatime;
         }
-
         else if (deltatime >= baseSource.clip.length)
         {
             musictime = 0.0f;
@@ -106,11 +100,10 @@ public class MusicScript : MonoBehaviour {
         }
 
         //Check for wrong clips playing. Not sure if everything here is necessary, someone should probably check. TODO.
-        if (ui.mainHand.clip != mainClip) //if we havent equipped te violin, change to drums
+        if (ui.mainHand.clip != mainClip) //if we havent equipped the instrument currently playing, change
         {
             mainClip = ui.mainHand.clip;
             mainSource.clip = mainClip;     
-            //mainSource.Stop();
             baseSource.time = musictime;
             mainSource.time = musictime;
             offSource.time = musictime;
@@ -123,7 +116,6 @@ public class MusicScript : MonoBehaviour {
         {
             offClip = ui.offHand.clip;
             offSource.clip = offClip;
-        //  offSource.Stop();
             baseSource.time = musictime;
             mainSource.time = musictime;
             offSource.time = musictime;
@@ -159,3 +151,6 @@ public class MusicScript : MonoBehaviour {
 		}
 	}
 }
+///Author(s): Samuel Ekne
+///Date: 11-11-2016
+///Last revision: 16-11-2016
