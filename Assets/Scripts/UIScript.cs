@@ -213,19 +213,19 @@ public class UIScript : MonoBehaviour
         GUIStyle tooltipStyle = "box";
         tooltipStyle.wordWrap = true;
 
+        //basic UI
+        GUI.Box(new Rect(Screen.width / 20, Screen.height - 350, Screen.width, Screen.height / 2.5f), mainUI, GUIStyle.none);
+
         //mainhand slot
-        GUI.Box(new Rect((Screen.width / 12) + 22, Screen.height - 240, 200, Screen.height / 6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
+        GUI.Box(new Rect((Screen.width / 10) - 5, Screen.height - 260, 200, Screen.height / 6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
 
         //offhand slot
-        GUI.Box(new Rect(9 * (Screen.width / 12) + 78, Screen.height - 235, 200, Screen.height / 6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
-
-        //basic UI
-        GUI.Box(new Rect(Screen.width/16, Screen.height - 300, Screen.width, Screen.height/3), mainUI, GUIStyle.none);
-
+        GUI.Box(new Rect(9 * (Screen.width / 11)-10, Screen.height - 260, 200, Screen.height / 6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
         if (mainMenu)
         {
-            GUI.Box(new Rect((Screen.width/25)-10, Screen.height-375, Screen.width/4, Screen.height/4), mainMenuTexture, GUIStyle.none);
+            //main menu bar
+            GUI.Box(new Rect((Screen.width/32)-15, Screen.height/2+10, Screen.width/4, Screen.height/4), mainMenuTexture, GUIStyle.none);
 
             //maybe need to change this to be based on screen size. Looked OK when I tested it. 
             int mainSpacing = Screen.width/16+5;
@@ -236,36 +236,37 @@ public class UIScript : MonoBehaviour
                 {
                     //TODO: This is the selected instrument: Write proper tooltip for "mainInstruments[i]", which is the same instrument
                     //but different icon from smallMain[i] and smallMainSel[i]. Check inspector for this script to see what index is what instrument currently
-                    GUI.Box(new Rect(mainSpacing-10, Screen.height - 425, 150, 50), mainhandInstruments[i].tooltip, tooltipStyle);
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 375, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
+                    GUI.Box(new Rect(mainSpacing-10, Screen.height - 480, 150, 50), mainhandInstruments[i].tooltip, tooltipStyle);
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
                 {
-                    GUI.Box(new Rect(mainSpacing, Screen.height - 375, 100, 100), mainhandInstruments[i].smallTexture, GUIStyle.none);
+                    GUI.Box(new Rect(mainSpacing, Screen.height - 440, 100, 100), mainhandInstruments[i].smallTexture, GUIStyle.none);
                 }
-                mainSpacing += 135;
+                mainSpacing += 150;
             }
         }
 
         if (offMenu)
         {
-            GUI.Box(new Rect(Screen.width-350 - 10, Screen.height - 375, Screen.width / 4, Screen.height / 4), offMenuTexture, GUIStyle.none);
+            //off menu bar
+            GUI.Box(new Rect(23*(Screen.width/32)+30, Screen.height/2+10, Screen.width / 4, Screen.height / 4), offMenuTexture, GUIStyle.none);
 
-            int offSpacing = 14*Screen.width / 16 - 10; //dont know why I need +125 here, is -= 125 evaluated first?
+            int offSpacing = 14*(Screen.width /16)+2; //dont know why I need +125 here, is -= 125 evaluated first?
             for (int i = 0; i < num_offInstruments; i++)
             {
                 if (offMenuPos == i) //if selected display selected texture/sprite
                 {
                     //TODO: Selected instrument for offhand write proper tooltip here, same deal as mainhand above
                     // in the offHand, the harp is pre-selected and thus have index 0, giving the violin index 1 
-                    GUI.Box(new Rect(offSpacing, Screen.height - 425, 150, 50), offhandInstruments[i].tooltip, tooltipStyle);
-                    GUI.Box(new Rect(offSpacing, Screen.height - 375, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
+                    GUI.Box(new Rect(offSpacing-20, Screen.height - 480, 150, 50), offhandInstruments[i].tooltip, tooltipStyle);
+                    GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].selectedTexture, GUIStyle.none);
                 }
                 else //otherwise display normal texture/sprite
                 {
-                    GUI.Box(new Rect(offSpacing, Screen.height - 375, 100, 100), offhandInstruments[i].smallTexture, GUIStyle.none);
+                    GUI.Box(new Rect(offSpacing, Screen.height - 440, 100, 100), offhandInstruments[i].smallTexture, GUIStyle.none);
                 }
-                offSpacing -= 135;
+                offSpacing -= 150;
             }
         }
 
