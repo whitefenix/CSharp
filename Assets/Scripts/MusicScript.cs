@@ -38,16 +38,24 @@ public class MusicScript : MonoBehaviour {
         source1.volume = startVolume;
         source2.volume = startVolume;
         source3.volume = startVolume;
-        source1.Play(); //1 is piano, always playing
-        source2.Play(); //2 is violin, 3 is drums which are turned on when violin is off
 
         GameObject theplayer = GameObject.Find("Player");
         ui = theplayer.GetComponent<UIScript>();
-    }
-	
-	//Update is called once per frame
-	void Update () {
 
+        source1.Play(); //1 is piano, always playing
+
+        if (ui.mainHand.instrumentName.Equals("Violin"))
+        {
+            source2.Play();
+        }
+        else
+        {
+            source3.Play();
+        }
+    }
+
+    //Update is called once per frame
+    void Update () {
         if (fadeIn)
         {
             if (source1.volume < startVolume)
@@ -74,9 +82,15 @@ public class MusicScript : MonoBehaviour {
         float freq = (float)source1.clip.frequency;
         int sample = source1.timeSamples;
         float deltatime = (float)sample / freq;
-        if (deltatime > 0.5f)
+        
+        if (deltatime >= 0.5f && deltatime < source1.clip.length) //0.5 
         {
             musictime = deltatime;
+        }
+
+        else if (deltatime >= source1.clip.length)
+        {
+            musictime = 0.0f;
         }
 
         //changes when fight is checked
@@ -99,28 +113,35 @@ public class MusicScript : MonoBehaviour {
             source1.volume = 0.0f;
             currentVolume = 0.0f;
             source1.Play();
-            source2.Play();
+            if (ui.mainHand.instrumentName.Equals("Violin"))
+            {
+                source2.Play();
+            }
+            else
+            {
+                source3.Play();
+            }
             fadeIn = true;
         }
 
         //changes when we unequip the violin
         else if (!fight && !ui.mainHand.instrumentName.Equals("Violin") && source2.isPlaying) //if we havent equipped te violin, change to drums
         {
-            source1.Stop();
             source2.Stop();
             source1.time = musictime;
+            source2.time = musictime;
             source3.time = musictime;
             source1.Play();
             source3.Play();
         }
         else if (!fight && ui.mainHand.instrumentName.Equals("Violin") && !source2.isPlaying ) //if we change back, change to violin
         {
-             source1.Stop();
-             source3.Stop();
-             source1.time = musictime;
-             source2.time = musictime;
-             source1.Play();
-             source2.Play();
+            source3.Stop();
+            source1.time = musictime;
+            source2.time = musictime;
+            source3.time = musictime;
+            source1.Play();
+            source2.Play();
         }
 	}
 

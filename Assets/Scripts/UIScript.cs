@@ -29,7 +29,7 @@ public class UIScript : MonoBehaviour
     private bool mainMenu = false, offMenu = false;
 
     //position in menu, number of instruments, index of equipped instrument
-    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
+    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 1, currentOff = 0;
 
     private Attack attack;
 
