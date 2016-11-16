@@ -17,6 +17,7 @@ public class UIScript : MonoBehaviour
         public Texture selectedTexture;
         public string instrumentName;
         public string tooltip;
+        public AudioClip clip;
         public Attack.Mode inMode;
     }
 
