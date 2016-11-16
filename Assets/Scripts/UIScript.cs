@@ -26,6 +26,8 @@ public class UIScript : MonoBehaviour
     public Instrument[] offhandInstruments;
     [HideInInspector] public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
 
+    public Texture mainUI;
+
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
 
@@ -209,11 +211,14 @@ public class UIScript : MonoBehaviour
         GUIStyle tooltipStyle = "box";
         tooltipStyle.wordWrap = true;
 
+        //basic UI
+        GUI.Box(new Rect(Screen.width/16, Screen.height - 300, Screen.width, Screen.height/3), mainUI, GUIStyle.none);
+
         //mainhand slot
-        GUI.Box(new Rect(100, Screen.height - 200, 200, 200), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
+        GUI.Box(new Rect((Screen.width/12)+22, Screen.height - 240, 200, Screen.height/6), mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
 
         //offhand slot
-        GUI.Box(new Rect(Screen.width - 300, Screen.height - 200, 200, 200), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
+        GUI.Box(new Rect(9*(Screen.width/12)+80, Screen.height - 240, 200, Screen.height/6), offhandInstruments[currentOff].mainTexture, GUIStyle.none);
 
         if (mainMenu)
         {
@@ -261,18 +266,6 @@ public class UIScript : MonoBehaviour
             }
         }
 
-        /* hearts
-         * looks like shit right now so is not displayed.
-         * Five boxes between the instruments
-         * Should probably be switched to a lifebar? Idk
-         */
-        /*
-        GUI.Box(new Rect(Screen.width - 375, Screen.height - 125, 50, 50), "");
-        GUI.Box(new Rect(Screen.width - 475, Screen.height - 125, 50, 50), "");
-        GUI.Box(new Rect(Screen.width - 575, Screen.height - 125, 50, 50), "");
-        GUI.Box(new Rect(Screen.width - 675, Screen.height - 125, 50, 50), "");
-        GUI.Box(new Rect(Screen.width - 775, Screen.height - 125, 50, 50), "");
-        */
     }
 
 	bool MainMenuInputTriggered() {
