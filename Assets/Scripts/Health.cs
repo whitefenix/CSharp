@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour {
 
@@ -11,9 +12,14 @@ public class Health : MonoBehaviour {
 	public float visualizationCooldown = 0.1f;
 	private SpriteRenderer sprite;
 
+	public Color damageColor = new Color (0.72f, 0f, 0.07f);
+	public Color healColor = Color.blue;
+
 	private bool dead;
 
 	public GameObject valueLabel;
+	private Transform cameraCanvas;
+	private Camera mainCamera;
 
 	public float health 
 	{
@@ -26,16 +32,23 @@ public class Health : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 
 		sprite = GetComponentsInChildren<SpriteRenderer> () [0];
 		currentHealth = Mathf.Min(initialHealth, maximumHealth);
+
+		//needed to intantiate damage labels
+		GameObject go = GameObject.FindWithTag ("MainCamera");
+		mainCamera =  go.GetComponent<Camera>();
+		cameraCanvas = go.transform.FindChild ("Canvas");
 
 		dead = (health <= 0);
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void FixedUpdate () 
+	{
 		VisualizeDamage ();
 	}
 
@@ -48,7 +61,7 @@ public class Health : MonoBehaviour {
 		lastHitTime = Time.time;
 
 		if (valueLabel != null)
-			SpawnLabel (value, Color.red);
+			SpawnLabel (value, damageColor);
 
 		if (currentHealth <= 0)
 			Die ();
@@ -61,17 +74,28 @@ public class Health : MonoBehaviour {
 			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
 
 			if (valueLabel != null)
-				SpawnLabel (value, Color.green);
+				SpawnLabel (value, healColor);
 		}
 	}
 
 	private void SpawnLabel(float value, Color color)
 	{
+		
+
 		GameObject label = (GameObject)Instantiate (valueLabel, gameObject.transform.position, Quaternion.identity);
+
 		TextMesh text = label.GetComponent<TextMesh> ();
 
 		text.text = value.ToString ();
 		text.color = color;
+
+//		GameObject label = Instantiate (valueLabel, mainCamera.WorldToScreenPoint(gameObject.transform.position), Quaternion.identity) as GameObject;
+//		label.transform.SetParent (cameraCanvas);
+//
+//		Text text = label.GetComponent<Text> ();
+//
+//		text.text = value.ToString ();
+//		text.color = color;
 	}
 
 	private void VisualizeDamage()
