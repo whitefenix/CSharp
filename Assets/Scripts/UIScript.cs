@@ -47,6 +47,8 @@ public class UIScript : MonoBehaviour
 
         GameObject theplayer = GameObject.Find("Player");
         attack = theplayer.GetComponentInChildren<Attack>();
+
+		attack.currentAttackMode = mainHand.inMode;
     }
 
     //called every frame
@@ -74,7 +76,7 @@ public class UIScript : MonoBehaviour
 
     void InputHandler()
     {
-        if (Input.GetKeyDown(KeyCode.Return) == true)
+		if (CloseMenuInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -86,7 +88,7 @@ public class UIScript : MonoBehaviour
             }
 
         }
-        if (Input.GetKeyDown(KeyCode.K) == true)
+		if (NavRightInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -114,7 +116,7 @@ public class UIScript : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.J) == true)
+		if (NavLeftInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -140,7 +142,7 @@ public class UIScript : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.G) == true)
+		if (MainMenuInputTriggered() == true)
         {
             //I hate reading one line ifs. If you want them you can change this.
             //Turn menu on if it was off, close it if it was on
@@ -153,7 +155,7 @@ public class UIScript : MonoBehaviour
                 mainMenu = true;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.H) == true)
+		else if (OffMenuInputTriggered() == true)
         {
             //Turn menu on if it was off, close it if it was on
             if (offMenu == true)
@@ -271,6 +273,26 @@ public class UIScript : MonoBehaviour
         GUI.Box(new Rect(Screen.width - 775, Screen.height - 125, 50, 50), "");
         */
     }
+
+	bool MainMenuInputTriggered() {
+		return Input.GetKeyDown (KeyCode.G) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_X);
+	}
+
+	bool OffMenuInputTriggered() {
+		return Input.GetKeyDown (KeyCode.H) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_B);
+	}
+
+	bool NavLeftInputTriggered() {
+		return Input.GetKeyDown (KeyCode.J) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_LB);
+	}
+
+	bool NavRightInputTriggered() {
+		return Input.GetKeyDown (KeyCode.K) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_RB);
+	}
+
+	bool CloseMenuInputTriggered() {
+		return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_Y);
+	}
 }
 
 ///Author(s): Samuel Ekne, Julia von Heijne

@@ -4,7 +4,6 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public float speed = 6.0F;
-	public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
 	private Vector3 moveDir = Vector3.zero;
 	public Vector3 aimDir;
@@ -27,7 +26,7 @@ public class PlayerController : MonoBehaviour {
 		mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 		sprite = this.GetComponentsInChildren<SpriteRenderer> ()[0];
 
-		//Use Terrain only
+		//Use Terrain only, for mouse cursor Raycast
 		layerMask = (1 << 8);
 	}
 
@@ -42,9 +41,6 @@ public class PlayerController : MonoBehaviour {
 			moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 			moveDir = transform.TransformDirection(moveDir);
 			moveDir *= speed;
-
-			if (Input.GetButton("Jump"))
-				moveDir.y = jumpSpeed;
 
 			if (moveDir.x >= 0)
 				sprite.flipX = true;

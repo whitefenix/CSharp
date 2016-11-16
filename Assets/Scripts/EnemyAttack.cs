@@ -5,13 +5,12 @@ public class EnemyAttack : MonoBehaviour {
 
 	//damage per hit
 	public float damage = 5.0f;
+
 	//Hits per second
 	public float attackSpeed = 0.5f;
 
-	private bool playerInRange = false;
-
 	private GameObject player;
-
+	private bool playerInRange = false;
 	private double attackTimeout;
 
 	// Use this for initialization
@@ -53,8 +52,10 @@ public class EnemyAttack : MonoBehaviour {
 
 		playerHealth.damage (damage);
 
-		if (playerHealth.isDead)
+		if (playerHealth.isDead) 
+		{
 			playerInRange = false;
+		}
 	}
 
 	public static bool IsPlayerCollider(Collider other)
