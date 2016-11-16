@@ -49,6 +49,8 @@ public class Attack : MonoBehaviour {
 	{
 		reachableEnemies = new List<GameObject> ();
 		killedEnemies = new List<GameObject> ();
+
+		OnSwitchAttackMode ();
 	}
 
 	void Update ()
@@ -56,22 +58,13 @@ public class Attack : MonoBehaviour {
 		//TODO delete DEBUG
 		if (Input.GetKeyDown(KeyCode.X))
 		{
-//			int mode = (int)currentAttackMode;
-//			mode ^= 1;
-//
-//			currentAttackMode = (Mode)mode;
-
 			if (currentAttack.Equals (Mode.SINGLE))
 				currentAttackMode = Mode.AOE_ROW;
 			else
 				currentAttackMode = Mode.SINGLE;
 		}	
-//	}
-//	
-//	// Update is called once per frame
-//	void FixedUpdate () 
-//	{
-		if (Time.time >= attackTimeout && Input.GetKeyDown (KeyCode.Space)) 
+
+		if (Time.time >= attackTimeout && AttackInputTriggered()) 
 		{
 			switch(currentAttack) 
 			{
@@ -187,5 +180,10 @@ public class Attack : MonoBehaviour {
 	public static bool IsEnemyCollider(Collider other)
 	{
 		return other.tag == "Attackable" && !other.isTrigger;
+	}
+
+	private bool AttackInputTriggered() 
+	{
+		return Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_A);
 	}
 }
