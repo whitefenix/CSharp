@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class UIScript : MonoBehaviour
 {
@@ -16,19 +17,22 @@ public class UIScript : MonoBehaviour
         public Texture smallTexture;
         public Texture selectedTexture;
         public string instrumentName;
-        public string tooltip;
+        public GameObject tooltip;
         public AudioClip clip;
         public Attack.Mode inMode;
+        public RawImage rawImage;
     }
+
+    public RawImage MainSlot;
+    public RawImage OffSlot;
+
+    public GameObject mainMenuPanel;
+    public GameObject offMenuPanel;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public Instrument[] mainhandInstruments;
     public Instrument[] offhandInstruments;
     [HideInInspector] public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
-
-    public Texture mainUI;
-    public Texture mainMenuTexture;
-    public Texture offMenuTexture;
 
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
@@ -55,6 +59,9 @@ public class UIScript : MonoBehaviour
         attack = theplayer.GetComponentInChildren<Attack>();
 
 		attack.currentAttackMode = mainHand.inMode;
+
+        mainMenuPanel.SetActive(false);
+        offMenuPanel.SetActive(false);
     }
 
     //called every frame
@@ -184,9 +191,11 @@ public class UIScript : MonoBehaviour
             currentMain = mainMenuPos;
             mainHand = mainhandInstruments[currentMain];
             attack.currentAttackMode = mainHand.inMode;
+            MainSlot.texture = mainHand.mainTexture;
         }
         mainMenuPos = currentMain;
         mainMenu = false;
+        mainMenuPanel.SetActive(false);
     }
 
     /*
@@ -198,107 +207,52 @@ public class UIScript : MonoBehaviour
         {
             currentOff = offMenuPos;
             offHand = offhandInstruments[currentOff];
+            OffSlot.texture = offHand.mainTexture;
         }
         offMenuPos = currentOff;
         offMenu = false;
+        offMenuPanel.SetActive(false);
     }
-
-	public Rect uiBars = new Rect(Screen.width / 20, Screen.height - 350, Screen.width, Screen.height / 2.5f);
-	public Rect mainhandSlot = new Rect((Screen.width / 10) - 7, Screen.height - 275, 200, Screen.height / 6);
-	public Rect offhandSlot = new Rect(9 * (Screen.width / 11)-3, Screen.height - 260, 200, Screen.height / 6);
-
-	public Rect mainhandBar = new Rect((Screen.width/32)-15, Screen.height/2+10, Screen.width/4, Screen.height/4);
-	public Rect mainhandTooltip = new Rect((Screen.width / 16 + 5)-7, Screen.height - 440, 150, 50);
-	public Rect mainhandSelected = new Rect((Screen.width / 16 + 5)-15, Screen.height - 400, 100, 100);
-	public Rect mainhandUnSelected = new Rect((Screen.width / 16 + 5)-15, Screen.height - 400, 100, 100);
-
-	public Rect offhandBar = new Rect(23*(Screen.width/32)+30, Screen.height/2+10, Screen.width / 4, Screen.height / 4);
-	public Rect offhandTooltip = new Rect((14*(Screen.width /16)+2)-20, Screen.height - 480, 150, 50);
-	public Rect offhandSelected = new Rect((14*(Screen.width /16)+2), Screen.height - 440, 100, 100);
-	public Rect offhandUnSelected = new Rect((14*(Screen.width /16)+2), Screen.height - 440, 100, 100);
 
     /*
      * All the GUI objects to be rendered. Also called every frame.
      */
     void OnGUI()
     {
-        //tooltip formatting
-        GUIStyle tooltipStyle = "box";
-        tooltipStyle.wordWrap = true;
-
-        //basic UI bars (not including top bars)
-		GUI.Box(uiBars, mainUI, GUIStyle.none);
-
-        //mainhand slot
-		GUI.Box(mainhandSlot, mainhandInstruments[currentMain].mainTexture, GUIStyle.none);
-
-        //offhand slot
-		GUI.Box(offhandSlot, offhandInstruments[currentOff].mainTexture, GUIStyle.none);
-
         if (mainMenu) //if mainhand menu is currently open
         {
-            //Top mainhand menu bar (left)
-			GUI.Box(mainhandBar, mainMenuTexture, GUIStyle.none);
-
-            //maybe need to change this to be based on screen size. Looked OK when I tested it. 
-            int mainSpacing = Screen.width/16+5;
-
-//            for (int i = 0; i < num_mainInstruments; i++)
-//            {
-                if (mainMenuPos == 0) //if selected display selected texture/sprite
+            mainMenuPanel.SetActive(true);
+            for (int i = 0; i < num_mainInstruments; i++)
+            {
+                if (mainMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //Display tooltip above selected instrument
-					GUI.Box(mainhandTooltip, mainhandInstruments[0].tooltip, tooltipStyle);
-                    //Display selected instrument sprite for instrument i
-					GUI.Box(mainhandSelected, mainhandInstruments[0].selectedTexture, GUIStyle.none);
-
-					//Display non-selected instrument sprite in the same spot
-					GUI.Box(mainhandUnSelected, mainhandInstruments[1].smallTexture, GUIStyle.none);
+                    mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].selectedTexture;
+                    mainhandInstruments[i].tooltip.SetActive(true);
                 }
                 else 
                 {
-					//Display tooltip above selected instrument
-					GUI.Box(mainhandTooltip, mainhandInstruments[1].tooltip, tooltipStyle);
-					//Display selected instrument sprite for instrument i
-					GUI.Box(mainhandUnSelected, mainhandInstruments[1].selectedTexture, GUIStyle.none);
-
-					//Display non-selected instrument sprite in the same spot
-					GUI.Box(mainhandSelected, mainhandInstruments[0].smallTexture, GUIStyle.none);
+                    mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].smallTexture;
+                    mainhandInstruments[i].tooltip.SetActive(false);
                 }
-                mainSpacing += 150; //move to the next slot, to the right
-            //}
+            }
         }
 
         if (offMenu) //if offhand menu is currently open
         {
-            //Top offhand menu bar (right)
-			GUI.Box(offhandBar, offMenuTexture, GUIStyle.none);
-
-            //position of first element (farthest to the left)
-            int offSpacing = 14*(Screen.width /16)+2; //dont know why I need +125 here, is -= 125 evaluated first?
-
-//            for (int i = 0; i < num_offInstruments; i++)
-//            {
-                if (offMenuPos == 0) //if selected display selected texture/sprite
+            offMenuPanel.SetActive(true);
+            for (int i = 0; i < num_offInstruments; i++)
+            {
+                if (offMenuPos == i) //if selected display selected texture/sprite
                 {
-                    //Diplay tooltip for selected instrument
-					GUI.Box(offhandTooltip, offhandInstruments[0].tooltip, tooltipStyle);
-                    //Display selected instrument sprite
-					GUI.Box(offhandSelected, offhandInstruments[0].selectedTexture, GUIStyle.none);
-					//Display non-selected instrument sprite
-					GUI.Box(offhandUnSelected, offhandInstruments[1].smallTexture, GUIStyle.none);
+                    offhandInstruments[i].rawImage.texture = offhandInstruments[i].selectedTexture;
+                    offhandInstruments[i].tooltip.SetActive(true);
                 }
                 else //This instrument i is not selected
                 {
-					//Diplay tooltip for selected instrument
-					GUI.Box(offhandTooltip, offhandInstruments[1].tooltip, tooltipStyle);
-					//Display selected instrument sprite
-					GUI.Box(offhandUnSelected, offhandInstruments[1].selectedTexture, GUIStyle.none);
-                    //Display non-selected instrument sprite
-					GUI.Box(offhandSelected, offhandInstruments[0].smallTexture, GUIStyle.none);
+                    offhandInstruments[i].rawImage.texture = offhandInstruments[i].smallTexture;
+                    offhandInstruments[i].tooltip.SetActive(false);
                 }
-                offSpacing -= 150; //move to next slot, to the left
-//            }
+            }
         }
 
     }
