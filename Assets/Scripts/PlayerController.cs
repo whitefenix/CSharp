@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 
 	private Camera mainCamera;
 	private SpriteRenderer sprite;
+	private Animator animator;
 
 	private int layerMask;
 
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 		sprite = this.GetComponentsInChildren<SpriteRenderer> ()[0];
+		animator = this.GetComponentsInChildren<Animator>()[0];
 
 		//Use Terrain only, for mouse cursor raycast
 		layerMask = (1 << 8);
@@ -40,13 +42,13 @@ public class PlayerController : MonoBehaviour {
 		CharacterController controller = GetComponent<CharacterController>();
 		if (controller.isGrounded) 
 		{
-			moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-			moveDir *= speed;
+			aimDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+			moveDir = aimDir * speed;
 
-			if (moveDir.x >= 0)
-				sprite.flipX = true;
-			else
-				sprite.flipX = false;
+//			if (moveDir.x >= 0)
+//				sprite.flipX = true;
+//			else
+//				sprite.flipX = false;
 		}
 		moveDir.y -= gravity * Time.deltaTime;
 		controller.Move(moveDir * Time.deltaTime);
@@ -65,14 +67,17 @@ public class PlayerController : MonoBehaviour {
 				aimDir = hit.point - transform.position;
 				aimDir.y = 0; //to 2D direction
 			}
-		} 
-		else 
-		{
-			aimDir = moveDir;
-			aimDir.y = 0; //to 2D direction
 		}
 
-		if (aimDir != Vector3.zero)
+		if (aimDir != Vector3.zero) 
+		{
 			transform.rotation = Quaternion.Euler (0, Quaternion.FromToRotation (Vector3.forward, aimDir).eulerAngles.y, 0);
+		}
+
+		animator.SetFloat ("SpeedX", moveDir.x);
+		animator.SetFloat ("SpeedZ", moveDir.z);
+
+		animator.SetFloat ("DirectionX", transform.forward.x);
+		animator.SetFloat ("DirectionZ", transform.forward.z);
 	}
 }
