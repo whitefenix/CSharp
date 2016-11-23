@@ -10,6 +10,10 @@ public class Attack : MonoBehaviour {
 		AOE_ROW
 	}
 
+    private bool knockback = false;
+    public float thrust = 100000.0f;
+    private UIScript ui;
+
 	//Used collider
 	public Collider[] attackCollidersPerMode = new Collider[NUM_MODES];
 	//Damage per hit
@@ -49,6 +53,7 @@ public class Attack : MonoBehaviour {
 	{
 		reachableEnemies = new List<GameObject> ();
 		killedEnemies = new List<GameObject> ();
+        ui = GetComponentInParent<UIScript>();
 
 		OnSwitchAttackMode ();
 	}
@@ -64,6 +69,16 @@ public class Attack : MonoBehaviour {
 				currentAttackMode = Mode.SINGLE;
 		}	
 
+        //Check if we are knockbacking
+        if (ui.offHand.instrumentName.Equals("Drum"))
+        {
+            knockback = true;
+        }
+        else
+        {
+            knockback = false;
+        }
+
 		if (Time.time >= attackTimeout && AttackInputTriggered()) 
 		{
 			switch(currentAttack) 
@@ -72,8 +87,12 @@ public class Attack : MonoBehaviour {
 				
 				GameObject closestEnemy = GetNearestEnemy ();
 				if (closestEnemy != null) 
-				{
-					DealDamage (closestEnemy);
+				{   
+                        if (knockback)
+                        {
+                            MoveEnemy(closestEnemy);
+                        }    
+                        DealDamage (closestEnemy);
 				}
 				break;
 
@@ -81,7 +100,11 @@ public class Attack : MonoBehaviour {
 
 				foreach (GameObject enemy in reachableEnemies) 
 				{
-					DealDamage (enemy);
+                        if (knockback)
+                        {
+                            MoveEnemy(enemy);
+                        }
+                        DealDamage (enemy);
 				}
 				break;
 			}
@@ -132,6 +155,14 @@ public class Attack : MonoBehaviour {
 		else
 			sprite.color = Color.white;
 	}
+
+    private void MoveEnemy(GameObject enemy)
+    {
+        Rigidbody body = enemy.GetComponent<Rigidbody>();
+        //TODO: Change thrustvector to be the direction opposite of player
+        Vector3 thrustvector = new Vector3(thrust, thrust, thrust);
+        body.AddForce(thrustvector, ForceMode.Impulse );
+    }
 
 	private void DealDamage(GameObject enemy)
 	{
