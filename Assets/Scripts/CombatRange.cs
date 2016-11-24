@@ -87,8 +87,50 @@ public class CombatRange : MonoBehaviour {
 		return closest;
 	}
 
+	public GameObject GetEnemyInRange(Vector3 origin, Vector3 direction, float maxDistance)
+	{
+		Ray ray = new Ray(origin, direction.normalized);
+
+		RaycastHit hit;
+		if (Physics.Raycast (ray, out hit, maxDistance, LayerMask.NameToLayer("DefaultRaycastLayers"), QueryTriggerInteraction.Ignore)) 
+		{
+			if (IsAttackable (hit.collider)) 
+			{
+				Debug.Log (hit.collider.gameObject.name);
+				return hit.collider.gameObject;
+			}
+		}
+
+		return null;
+	}
+
+	public GameObject[] GetEnemiesInRange(Vector3 origin, Vector3 direction, float maxDistance, int maxEnemies)
+	{
+		Ray ray = new Ray(origin, direction.normalized);
+		List<GameObject> hitEnemies = new List<GameObject> ();
+
+		RaycastHit[] hits = Physics.RaycastAll (ray, maxDistance, 
+			LayerMask.NameToLayer("DefaultRaycastLayers"), 
+			QueryTriggerInteraction.Ignore);
+
+		foreach (RaycastHit hit in hits) 
+		{
+			if (IsAttackable (hit.collider) && hitEnemies.Count < maxEnemies) 
+			{
+				hitEnemies.Add (hit.collider.gameObject);
+			}
+		}
+
+		return hitEnemies.ToArray ();
+	}
+
+	public static bool IsAttackable(Collider other)
+	{
+		return other.tag == "Attackable";
+	}
+
 	public static bool IsEnemyCollider(Collider other)
 	{
-		return other.tag == "Attackable" && !other.isTrigger;
+		return IsAttackable(other) && !other.isTrigger;
 	}
 }

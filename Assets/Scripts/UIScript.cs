@@ -77,9 +77,8 @@ public class UIScript : MonoBehaviour
 
         attack = GetComponent<PlayerAttack>();
 
-		//attack.currentInstrument = mainHand.type;
 		//attack.SetCurrentInstrument(mainHand.type);
-		attack.offHandPerk = offHand.perk;
+		//attack.SetCurrentPerk(offHand.perk);
 
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
@@ -229,7 +228,7 @@ public class UIScript : MonoBehaviour
         {
             currentOff = offMenuPos;
             offHand = offhandInstruments[currentOff];
-			attack.offHandPerk = offHand.perk;
+			attack.SetCurrentPerk(offHand.perk);
             OffSlot.texture = offHand.mainTexture;
         }
         offMenuPos = currentOff;

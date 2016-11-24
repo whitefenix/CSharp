@@ -24,12 +24,26 @@ public class PlayerAttack : MonoBehaviour {
 	[System.Serializable]
 	public class MainInstrument
 	{
+		[Header("General:")]
 		public float damage;
 		public float speed;
+		public Mode mode;
+
+		[Header("Meele only:")]
+		public CombatRange.RangeCollider meeleCollider;
+
+		[Header("Ranged only:")]
+		public float range;
+
+		[Header("PERK Pierce, ranged only:")]
+		public int pierceTrough;
+
+		[Header("PERK Pierce, meele only:")]
+		public CombatRange.RangeCollider pierceCollider;
+
+		[Header("PERK Knockback:")]
 		public float knockbackStun;
 		public float knockbackStrength;
-		public Mode mode;
-		public CombatRange.RangeCollider meeleCollider;
 	}
 
 	public MainInstrument[] mainHandInstruments = new MainInstrument[MAIN_INSTRUMENT_COUNT];
@@ -39,15 +53,25 @@ public class PlayerAttack : MonoBehaviour {
 	private CombatRange combatRange;
 	private List<GameObject> killedEnemies;
 
-	//[HideInInspector] 
-	public Perk offHandPerk;
-	public Type mainHandIdx;
+	private Perk offHandPerk;
+	private Type mainHandIdx;
+
+	public void SetCurrentPerk(Perk perk)
+	{
+		offHandPerk = perk;
+
+		//update collider in case the perk influences the range!
+		SetCurrentInstrument(mainHandIdx);
+	}
 
 	public void SetCurrentInstrument(Type instrument)
 	{
 		mainHandIdx = instrument;
 
-		this.combatRange.SetCollider (mainHandInstruments[(int)mainHandIdx].meeleCollider);
+		if(offHandPerk.Equals (Perk.PIERCE))
+			this.combatRange.SetCollider (mainHandInstruments[(int)mainHandIdx].pierceCollider);
+		else
+			this.combatRange.SetCollider (mainHandInstruments[(int)mainHandIdx].meeleCollider);
 	}
 
 	// Use this for initialization
@@ -56,7 +80,9 @@ public class PlayerAttack : MonoBehaviour {
 		killedEnemies = new List<GameObject> ();
 		combatRange = GetComponentsInChildren<CombatRange>()[0];
 
+		//TODO do somewhere else... init problems
 		SetCurrentInstrument (Type.VIOLIN);
+		SetCurrentPerk(Perk.KNOCKBACK);
 	}
 	
 	// Update is called once per frame
@@ -65,7 +91,7 @@ public class PlayerAttack : MonoBehaviour {
 		if (Time.time >= attackTimeout && AttackInputTriggered()) 
 		{
 			MainInstrument currentInstrument = mainHandInstruments[(int)mainHandIdx];
-			switch(currentInstrument.mode) 
+			switch (currentInstrument.mode) 
 			{
 			case Mode.SINGLE_MEELE:
 
@@ -85,13 +111,40 @@ public class PlayerAttack : MonoBehaviour {
 				}
 				break;
 			case Mode.SINGLE_RANGED:
-				//TODO
+
+				if (offHandPerk.Equals (Perk.PIERCE)) 
+				{
+					GameObject[] rangedEnemies = combatRange.GetEnemiesInRange (
+						                             transform.position + new Vector3 (0, 1, 0), 
+						                             transform.forward, 
+						                             currentInstrument.range, 
+						                             currentInstrument.pierceTrough + 1);
+
+					foreach (GameObject enemy in rangedEnemies) 
+					{
+						DealDamage (enemy);
+					}
+				} 
+				else 
+				{
+					GameObject rangedEnemy = combatRange.GetEnemyInRange (
+						                         transform.position + new Vector3 (0, 1, 0), 
+						                         transform.forward, 
+						                         currentInstrument.range);
+
+					if (rangedEnemy != null) 
+					{ 
+						DealDamage (rangedEnemy);
+					}
+				}
+
 				break;
 			}
-
 			combatRange.RemoveEnemies (ref killedEnemies);
 			attackTimeout = Time.time + (1.0f / currentInstrument.speed);
 		}
+
+		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);
 	}
 
 	private void KnockbackEnemy(GameObject enemy)
@@ -112,11 +165,17 @@ public class PlayerAttack : MonoBehaviour {
 		}
 
 		Health enemyHealth = enemy.GetComponent<Health> ();
-
 		enemyHealth.damage (mainHandInstruments[(int)mainHandIdx].damage);
 
-		if (enemyHealth.isDead)
+		if (enemyHealth.isDead) 
+		{
 			killedEnemies.Add (enemy);
+		}
+		else
+		{
+			//Move to the origin of attack (if not already following player)
+			enemy.SendMessage ("SetMoveOrder", transform.position);
+		}
 	}
 
 	private bool AttackInputTriggered() 
