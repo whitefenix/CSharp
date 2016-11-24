@@ -34,6 +34,7 @@ public class PlayerAttack : MonoBehaviour {
 
 		[Header("Ranged only:")]
 		public float range;
+		public GameObject missile;
 
 		[Header("PERK Pierce, ranged only:")]
 		public int pierceTrough;
@@ -112,31 +113,46 @@ public class PlayerAttack : MonoBehaviour {
 				break;
 			case Mode.SINGLE_RANGED:
 
-				if (offHandPerk.Equals (Perk.PIERCE)) 
-				{
-					GameObject[] rangedEnemies = combatRange.GetEnemiesInRange (
-						                             transform.position + new Vector3 (0, 1, 0), 
-						                             transform.forward, 
-						                             currentInstrument.range, 
-						                             currentInstrument.pierceTrough + 1);
+				int pierce = 1;
+				if (offHandPerk.Equals (Perk.PIERCE))
+					pierce = currentInstrument.pierceTrough;
 
-					foreach (GameObject enemy in rangedEnemies) 
-					{
-						DealDamage (enemy);
-					}
-				} 
-				else 
-				{
-					GameObject rangedEnemy = combatRange.GetEnemyInRange (
-						                         transform.position + new Vector3 (0, 1, 0), 
-						                         transform.forward, 
-						                         currentInstrument.range);
+				Vector3 position = transform.position + new Vector3 (0, 1, 0) + transform.forward;
+				GameObject missile = (GameObject)Instantiate (
+					currentInstrument.missile, position, 
+					Quaternion.LookRotation(transform.forward) * Quaternion.Euler(0,90,0));
+				Missile m = missile.GetComponent<Missile> ();
 
-					if (rangedEnemy != null) 
-					{ 
-						DealDamage (rangedEnemy);
-					}
-				}
+				m.attack = this;
+				m.direction = transform.forward * 0.1f;
+				m.maxRange = currentInstrument.range;
+				m.pierce = pierce;
+
+//				if (offHandPerk.Equals (Perk.PIERCE)) 
+//				{
+//					GameObject[] rangedEnemies = combatRange.GetEnemiesInRange (
+//						                             transform.position + new Vector3 (0, 1, 0), 
+//						                             transform.forward, 
+//						                             currentInstrument.range, 
+//						                             currentInstrument.pierceTrough + 1);
+//
+//					foreach (GameObject enemy in rangedEnemies) 
+//					{
+//						DealDamage (enemy);
+//					}
+//				} 
+//				else 
+//				{
+//					GameObject rangedEnemy = combatRange.GetEnemyInRange (
+//						                         transform.position + new Vector3 (0, 1, 0), 
+//						                         transform.forward, 
+//						                         currentInstrument.range);
+//
+//					if (rangedEnemy != null) 
+//					{ 
+//						DealDamage (rangedEnemy);
+//					}
+//				}
 
 				break;
 			}
@@ -157,7 +173,7 @@ public class PlayerAttack : MonoBehaviour {
 		enemy.SendMessage("Stun", stunTime);
 	}
 
-	private void DealDamage(GameObject enemy)
+	public void DealDamage(GameObject enemy)
 	{
 		if (offHandPerk.Equals (Perk.KNOCKBACK)) 
 		{
