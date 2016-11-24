@@ -60,7 +60,7 @@ public class Health : MonoBehaviour {
 		VisualizeStun ();
 	}
 
-	public void damage(float value)
+	public void damage(float value, bool critical = false)
 	{
 		currentHealth -= value;
 
@@ -68,8 +68,13 @@ public class Health : MonoBehaviour {
 
 		lastHitTime = Time.time;
 
-		if (valueLabel != null)
-			SpawnLabel (value, damageColor);
+		if (valueLabel != null) 
+		{
+			if(critical)
+				SpawnLabel (value, damageColor, "Critical!");
+			else
+				SpawnLabel (value, damageColor);
+		}
 
 		if (currentHealth <= 0)
 			Die ();
@@ -86,14 +91,17 @@ public class Health : MonoBehaviour {
 		}
 	}
 
-	private void SpawnLabel(float value, Color color)
+	private void SpawnLabel(float value, Color color, string extra = "")
 	{
 		GameObject label = (GameObject)Instantiate (valueLabel, lableOrigin.transform.position, Quaternion.identity);
 
 		TextMesh text = label.GetComponent<TextMesh> ();
 
-		text.text = value.ToString ();
 		text.color = color;
+		text.text = value.ToString ();
+
+		if (extra.Length > 0)
+			text.text += " " + extra;
 	}
 
 	private void VisualizeDamage()

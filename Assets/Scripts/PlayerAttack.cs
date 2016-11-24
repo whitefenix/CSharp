@@ -28,6 +28,8 @@ public class PlayerAttack : MonoBehaviour {
 		public float damage;
 		public float speed;
 		public Mode mode;
+		[Range(0,1)]
+		public float criticalProbability;
 
 		[Header("Meele only:")]
 		public CombatRange.RangeCollider meeleCollider;
@@ -38,14 +40,22 @@ public class PlayerAttack : MonoBehaviour {
 
 		[Header("PERK Pierce, ranged only:")]
 		public int pierceTrough;
+		[Range(0,1)]
+		public float pierceProbability;
 
 		[Header("PERK Pierce, meele only:")]
 		public CombatRange.RangeCollider pierceCollider;
 
 		[Header("PERK Knockback:")]
-		public float knockbackStun;
 		public float knockbackStrength;
+		[Range(0,1)]
+		public float knockbackProbability;
+		public float knockbackStun;
+		[Range(0,1)]
+		public float knockbackStunProbability;
 	}
+
+	public float criticalDamageMultiplicator = 3.0f;
 
 	public MainInstrument[] mainHandInstruments = new MainInstrument[MAIN_INSTRUMENT_COUNT];
 
@@ -56,6 +66,8 @@ public class PlayerAttack : MonoBehaviour {
 
 	private Perk offHandPerk;
 	private Type mainHandIdx;
+
+	private Vector3 missileSpawnHeight = Vector3.up;
 
 	public void SetCurrentPerk(Perk perk)
 	{
@@ -91,7 +103,7 @@ public class PlayerAttack : MonoBehaviour {
 	{
 		if (Time.time >= attackTimeout && AttackInputTriggered()) 
 		{
-			MainInstrument currentInstrument = mainHandInstruments[(int)mainHandIdx];
+			MainInstrument currentInstrument = GetMainInstrument();
 			switch (currentInstrument.mode) 
 			{
 			case Mode.SINGLE_MEELE:
@@ -114,13 +126,16 @@ public class PlayerAttack : MonoBehaviour {
 			case Mode.SINGLE_RANGED:
 
 				int pierce = 1;
-				if (offHandPerk.Equals (Perk.PIERCE))
+				if (offHandPerk.Equals (Perk.PIERCE) && Random.value <= GetMainInstrument().pierceProbability) 
+				{
 					pierce = currentInstrument.pierceTrough;
+				}
+				Vector3 position = transform.position + missileSpawnHeight + transform.forward;
 
-				Vector3 position = transform.position + new Vector3 (0, 1, 0) + transform.forward;
 				GameObject missile = (GameObject)Instantiate (
 					currentInstrument.missile, position, 
 					Quaternion.LookRotation(transform.forward) * Quaternion.Euler(0,90,0));
+				
 				Missile m = missile.GetComponent<Missile> ();
 
 				m.attack = this;
@@ -163,25 +178,39 @@ public class PlayerAttack : MonoBehaviour {
 		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);
 	}
 
+	private MainInstrument GetMainInstrument()
+	{
+		return mainHandInstruments [(int)mainHandIdx];
+	}
+
 	private void KnockbackEnemy(GameObject enemy)
 	{
-		float stunTime = mainHandInstruments [(int)mainHandIdx].knockbackStun;
+		float stunTime = GetMainInstrument().knockbackStun;
 		Vector3 dir = (enemy.transform.position - transform.position).normalized;
-		dir *= mainHandInstruments [(int)mainHandIdx].knockbackStrength;
+		dir *= GetMainInstrument().knockbackStrength;
 
-		enemy.SendMessage("Knockback", dir);
-		enemy.SendMessage("Stun", stunTime);
+
+		enemy.SendMessage ("Knockback", dir);
+
+		if (Random.value <= GetMainInstrument().knockbackStunProbability)
+			enemy.SendMessage ("Stun", stunTime);
 	}
 
 	public void DealDamage(GameObject enemy)
 	{
-		if (offHandPerk.Equals (Perk.KNOCKBACK)) 
+		if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability) 
 		{
 			KnockbackEnemy (enemy);
 		}
 
+		bool critical = (Random.value <= GetMainInstrument ().criticalProbability);
+		float damage = GetMainInstrument ().damage;
+
+		if(critical)
+			damage *= criticalDamageMultiplicator;
+
 		Health enemyHealth = enemy.GetComponent<Health> ();
-		enemyHealth.damage (mainHandInstruments[(int)mainHandIdx].damage);
+		enemyHealth.damage (damage, critical);
 
 		if (enemyHealth.isDead) 
 		{

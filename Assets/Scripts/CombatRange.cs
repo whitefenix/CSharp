@@ -4,11 +4,12 @@ using System.Collections.Generic;
 
 public class CombatRange : MonoBehaviour {
 
-	private const int NUM_COLLIDERS = 2;
+	private const int NUM_COLLIDERS = 3;
 	public enum RangeCollider {
 		NONE = -1,
 		SPHERE_SMALL = 0,
-		BOX_WIDE = 1
+		BOX_WIDE = 1,
+		BOX_XWIDE = 2
 	}
 
 	public Collider[] attackColliders = new Collider[NUM_COLLIDERS];
