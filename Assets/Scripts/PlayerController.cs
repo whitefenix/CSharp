@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour {
 	public GameObject cursor;
 
 	private Camera mainCamera;
-	private SpriteRenderer sprite;
 	private Animator animator;
 
 	private int layerMask;
@@ -27,7 +26,6 @@ public class PlayerController : MonoBehaviour {
 	void Start () 
 	{
 		mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
-		sprite = this.GetComponentsInChildren<SpriteRenderer> ()[0];
 		animator = this.GetComponentsInChildren<Animator>()[0];
 
 		//Use Terrain only, for mouse cursor raycast
@@ -44,11 +42,6 @@ public class PlayerController : MonoBehaviour {
 		{
 			aimDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 			moveDir = aimDir * speed;
-
-//			if (moveDir.x >= 0)
-//				sprite.flipX = true;
-//			else
-//				sprite.flipX = false;
 		}
 		moveDir.y -= gravity * Time.deltaTime;
 		controller.Move(moveDir * Time.deltaTime);

@@ -10,18 +10,34 @@ public class UIScript : MonoBehaviour
      */
 
     [System.Serializable]
-    public class Instrument
+	public class MainHandInstrument
     {
         //TODO: Maybe implement variables for attack mode? 
-        public Texture mainTexture;
-        public Texture smallTexture;
-        public Texture selectedTexture;
+		public Texture mainTexture;
+		public Texture smallTexture;
+		public Texture selectedTexture;
         public string instrumentName;
         public GameObject tooltip;
         public AudioClip clip;
-        public Attack.Mode inMode;
         public RawImage rawImage;
+
+		public PlayerAttack.Type type;
     }
+
+	[System.Serializable]
+	public class OffHandInstrument
+	{
+		//TODO: Maybe implement variables for attack mode? 
+		public Texture mainTexture;
+		public Texture smallTexture;
+		public Texture selectedTexture;
+		public string instrumentName;
+		public GameObject tooltip;
+		public AudioClip clip;
+		public RawImage rawImage;
+
+		public PlayerAttack.Perk perk;
+	}
 
     public RawImage MainSlot;
     public RawImage OffSlot;
@@ -30,9 +46,13 @@ public class UIScript : MonoBehaviour
     public GameObject offMenuPanel;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
-    public Instrument[] mainhandInstruments;
-    public Instrument[] offhandInstruments;
-    [HideInInspector] public Instrument mainHand, offHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
+	public MainHandInstrument[] mainhandInstruments;
+	public OffHandInstrument[] offhandInstruments;
+
+    [HideInInspector] 
+	public MainHandInstrument mainHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
+	[HideInInspector] 
+	public OffHandInstrument offHand;
 
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
@@ -40,7 +60,7 @@ public class UIScript : MonoBehaviour
     //position in menu, number of instruments, index of equipped instrument
     private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
 
-    private Attack attack;
+	private PlayerAttack attack;
 
     private Light lights;
 
@@ -55,10 +75,11 @@ public class UIScript : MonoBehaviour
         GameObject lightsource = GameObject.Find("Directional Light");
         lights = lightsource.GetComponent<Light>();
 
-		GameObject theplayer = GameObject.FindWithTag("Player");
-        attack = theplayer.GetComponentInChildren<Attack>();
+        attack = GetComponent<PlayerAttack>();
 
-		attack.currentAttackMode = mainHand.inMode;
+		//attack.currentInstrument = mainHand.type;
+		//attack.SetCurrentInstrument(mainHand.type);
+		attack.offHandPerk = offHand.perk;
 
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
@@ -190,7 +211,8 @@ public class UIScript : MonoBehaviour
         {
             currentMain = mainMenuPos;
             mainHand = mainhandInstruments[currentMain];
-            attack.currentAttackMode = mainHand.inMode;
+			//attack.currentInstrument = mainHand.type;
+			attack.SetCurrentInstrument(mainHand.type);
             MainSlot.texture = mainHand.mainTexture;
         }
         mainMenuPos = currentMain;
@@ -207,6 +229,7 @@ public class UIScript : MonoBehaviour
         {
             currentOff = offMenuPos;
             offHand = offhandInstruments[currentOff];
+			attack.offHandPerk = offHand.perk;
             OffSlot.texture = offHand.mainTexture;
         }
         offMenuPos = currentOff;

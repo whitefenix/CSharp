@@ -62,4 +62,9 @@ public class EnemyAttack : MonoBehaviour {
 	{
 		return other.tag == "Player" && !other.isTrigger;
 	}
+
+	public void Stun (float stunTime)
+	{
+		attackTimeout = Time.time + stunTime;
+	}
 }
