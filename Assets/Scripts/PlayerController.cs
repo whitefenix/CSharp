@@ -44,7 +44,12 @@ public class PlayerController : MonoBehaviour {
 			moveDir = aimDir * speed;
 		}
 		moveDir.y -= gravity * Time.deltaTime;
-		controller.Move(moveDir * Time.deltaTime);
+
+		//Don't move while fighting animation is playing
+		if (!animator.GetCurrentAnimatorStateInfo (0).IsName ("Fighting")) 
+		{
+			controller.Move(moveDir * Time.deltaTime);
+		}
 
 		/*
 		 * AIM

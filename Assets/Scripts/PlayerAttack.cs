@@ -61,6 +61,7 @@ public class PlayerAttack : MonoBehaviour {
 
 	private double attackTimeout;
 
+	private Animator animator;
 	private CombatRange combatRange;
 	private List<GameObject> killedEnemies;
 
@@ -92,6 +93,7 @@ public class PlayerAttack : MonoBehaviour {
 	{
 		killedEnemies = new List<GameObject> ();
 		combatRange = GetComponentsInChildren<CombatRange>()[0];
+		animator = this.GetComponentsInChildren<Animator>()[0];
 
 		//TODO do somewhere else... init problems
 		SetCurrentInstrument (Type.VIOLIN);
@@ -101,16 +103,13 @@ public class PlayerAttack : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Time.time >= attackTimeout && AttackInputTriggered()) 
-		{
-			MainInstrument currentInstrument = GetMainInstrument();
-			switch (currentInstrument.mode) 
-			{
+		if (Time.time >= attackTimeout && AttackInputTriggered ()) {
+			MainInstrument currentInstrument = GetMainInstrument ();
+			switch (currentInstrument.mode) {
 			case Mode.SINGLE_MEELE:
 
 				GameObject closestEnemy = combatRange.GetNearestEnemy ();
-				if (closestEnemy != null) 
-				{ 
+				if (closestEnemy != null) { 
 					DealDamage (closestEnemy);
 				}
 				break;
@@ -118,23 +117,21 @@ public class PlayerAttack : MonoBehaviour {
 			case Mode.AOE_MEELE_ROW:
 
 				GameObject[] enemies = combatRange.GetEnemies ();
-				foreach (GameObject enemy in enemies) 
-				{
+				foreach (GameObject enemy in enemies) {
 					DealDamage (enemy);
 				}
 				break;
 			case Mode.SINGLE_RANGED:
 
 				int pierce = 1;
-				if (offHandPerk.Equals (Perk.PIERCE) && Random.value <= GetMainInstrument().pierceProbability) 
-				{
+				if (offHandPerk.Equals (Perk.PIERCE) && Random.value <= GetMainInstrument ().pierceProbability) {
 					pierce = currentInstrument.pierceTrough;
 				}
 				Vector3 position = transform.position + missileSpawnHeight + transform.forward;
 
 				GameObject missile = (GameObject)Instantiate (
-					currentInstrument.missile, position, 
-					Quaternion.LookRotation(transform.forward) * Quaternion.Euler(0,90,0));
+					                     currentInstrument.missile, position, 
+					                     Quaternion.LookRotation (transform.forward) * Quaternion.Euler (0, 90, 0));
 				
 				Missile m = missile.GetComponent<Missile> ();
 
@@ -173,6 +170,12 @@ public class PlayerAttack : MonoBehaviour {
 			}
 			combatRange.RemoveEnemies (ref killedEnemies);
 			attackTimeout = Time.time + (1.0f / currentInstrument.speed);
+			//animator.SetBool ("isFighting", true);
+
+			animator.Play("Fighting");
+		} else {
+			//animator.SetBool ("isFighting", false);
+
 		}
 
 		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);

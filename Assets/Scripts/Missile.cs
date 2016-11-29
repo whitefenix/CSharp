@@ -18,6 +18,7 @@ public class Missile : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () 
 	{
+		//Destroy if it reaches its maximum distance or if it pierced through the state number of enemies
 		if (Vector3.Distance (transform.position, initialPosition) > maxRange || pierce <= 0)
 			Destroy (gameObject);
 
@@ -28,15 +29,9 @@ public class Missile : MonoBehaviour {
 	{
 		if (CombatRange.IsEnemyCollider (other)) 
 		{
+			//Debug.Log ("Sphere hit:" + other.gameObject.name);
 			pierce--;
-
-			Debug.Log ("Sphere hit:" + other.gameObject.name);
-
 			attack.DealDamage (other.gameObject);
-		} 
-//		else if (!EnemyAttack.IsPlayerCollider (other)) 
-//		{
-//			Destroy (gameObject);
-//		}
+		}
 	}
 }
