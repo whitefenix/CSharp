@@ -6,7 +6,7 @@ public class Health : MonoBehaviour {
 
 	public float maximumHealth = 100;
 	public float initialHealth = 100;
-	private float currentHealth;
+	[HideInInspector] public float currentHealth;
 
 	private float lastHitTime;
 	private float lastStunTime;

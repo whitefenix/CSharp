@@ -49,7 +49,7 @@ public class MusicScript : MonoBehaviour {
 
     //Update is called once per frame
     void Update () {
-
+        
         if (fadeIn)
         {
             if (baseSource.volume < startVolume)
@@ -94,16 +94,17 @@ public class MusicScript : MonoBehaviour {
         }
 
         //changes when fight is checked
+        //TEMPORARY DISABLED: USE FOR BOSS FIGHT ONLY
         if (fight && baseSource.volume > 0.1f) //if we are fighting we get silenced
         {
-            baseSource.volume -= 0.6f * Time.deltaTime;
-            mainSource.volume -= 0.6f * Time.deltaTime;
-            offSource.volume -= 0.6f * Time.deltaTime;
+       //     baseSource.volume -= 0.6f * Time.deltaTime;
+       //     mainSource.volume -= 0.6f * Time.deltaTime;
+       //     offSource.volume -= 0.6f * Time.deltaTime;
         }
         else if (!fight && baseSource.volume < 1.0f && fadeIn == false) //if we are not fighting we get sound back
         {
-            currentVolume = 0.1f;
-            fadeIn = true;
+        //    currentVolume = 0.1f;
+        //    fadeIn = true;
         }
 
         //Check for wrong clips playing. Not sure if everything here is necessary, someone should probably check. TODO.
