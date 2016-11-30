@@ -30,8 +30,9 @@ public class PlayerAttack : MonoBehaviour {
 		public Mode mode;
 		[Range(0,1)]
 		public float criticalProbability;
+        public AudioClip hitClip;
 
-		[Header("Meele only:")]
+        [Header("Meele only:")]
 		public CombatRange.RangeCollider meeleCollider;
 
 		[Header("Ranged only:")]
@@ -201,7 +202,10 @@ public class PlayerAttack : MonoBehaviour {
 
 	public void DealDamage(GameObject enemy)
 	{
-		if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability) 
+        AudioSource hitSound = GetComponent<AudioSource>();
+        hitSound.PlayOneShot(GetMainInstrument().hitClip);
+
+        if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability) 
 		{
 			KnockbackEnemy (enemy);
 		}
