@@ -46,10 +46,15 @@ public class PlayerController : MonoBehaviour {
 		moveDir.y -= gravity * Time.deltaTime;
 
 		//Don't move while fighting animation is playing
-		if (!animator.GetCurrentAnimatorStateInfo (0).IsName ("Fighting")) 
+		if (!HoldMovementDown () && !animator.GetCurrentAnimatorStateInfo (0).IsName ("Fighting")) 
 		{
-			controller.Move(moveDir * Time.deltaTime);
+			controller.Move (moveDir * Time.deltaTime);
+		} 
+		else 
+		{
+			moveDir = Vector3.zero;
 		}
+
 
 		/*
 		 * AIM
@@ -77,5 +82,10 @@ public class PlayerController : MonoBehaviour {
 
 		animator.SetFloat ("DirectionX", transform.forward.x);
 		animator.SetFloat ("DirectionZ", transform.forward.z);
+	}
+
+	private bool HoldMovementDown() 
+	{
+		return (Input.GetKey (KeyCode.LeftShift) || Input.GetAxis (GlobalConstants.XBOX_AXIS_RT) > 0);
 	}
 }

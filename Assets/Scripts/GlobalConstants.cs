@@ -12,6 +12,9 @@ public class GlobalConstants {
 	public const KeyCode XBOX_BTN_LB = KeyCode.Joystick1Button4;
 	public const KeyCode XBOX_BTN_RB = KeyCode.Joystick1Button5;
 
+	public const string XBOX_AXIS_LT = "LTriggerWin";
+	public const string XBOX_AXIS_RT = "RTriggerWin";
+
 	#elif UNITY_STANDALONE_OSX
 
 	public const KeyCode XBOX_BTN_A = KeyCode.Joystick1Button16;
@@ -21,6 +24,9 @@ public class GlobalConstants {
 
 	public const KeyCode XBOX_BTN_LB = KeyCode.Joystick1Button13;
 	public const KeyCode XBOX_BTN_RB = KeyCode.Joystick1Button14;
+
+	public const string XBOX_AXIS_LT = "LTriggerMac";
+	public const string XBOX_AXIS_RT = "RTriggerMac";
 
 	#elif UNITY_XBOX360
 

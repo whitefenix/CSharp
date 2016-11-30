@@ -15,10 +15,12 @@ public class Health : MonoBehaviour {
 	private SpriteRenderer sprite;
 
 	public Color damageColor = new Color (0.72f, 0f, 0.07f);
-	public Color healColor = Color.blue;
+	public Color healColor = new Color (0.8f, 1.0f, 1.0f);
 
 	private bool dead;
 
+	public bool showHealLabel = false;
+	public bool showDamageLabel = true;
 	public GameObject valueLabel;
 	public GameObject lableOrigin;
 
@@ -68,7 +70,7 @@ public class Health : MonoBehaviour {
 
 		lastHitTime = Time.time;
 
-		if (valueLabel != null) 
+		if (valueLabel != null && showDamageLabel) 
 		{
 			if(critical)
 				SpawnLabel (value, damageColor, "Critical!");
@@ -86,7 +88,7 @@ public class Health : MonoBehaviour {
 		{
 			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
 
-			if (valueLabel != null)
+			if (valueLabel != null && showHealLabel)
 				SpawnLabel (value, healColor);
 		}
 	}
