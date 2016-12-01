@@ -11,19 +11,21 @@ public class HealthPotion : MonoBehaviour {
 	public Transform sprite;
 
 	Vector3 initialPosition;
-	Vector3 initialShadowScale;
+	Vector3 initialShadowPos;
 
 	void Start()
 	{
 		initialPosition = sprite.position;
-		initialShadowScale = shadow.localScale;
+		initialShadowPos = shadow.position;
 	}
 
 	void FixedUpdate()
 	{
-		sprite.position = initialPosition + Vector3.up * Mathf.Sin (Time.time * speed) * intensity;
+		Vector3 offset = Vector3.up * Mathf.Sin (Time.time * speed) * intensity;
 
-		shadow.localScale = initialShadowScale + Vector3.one * Mathf.Sin (Time.time * speed) * -intensity;
+		sprite.position = initialPosition + offset;
+		shadow.position = initialShadowPos + offset;
+		//shadow.localScale = initialShadowScale + Vector3.one * Mathf.Sin (Time.time * speed) * -intensity;
 	}
 
 	void OnTriggerEnter(Collider other)
