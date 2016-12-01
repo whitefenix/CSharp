@@ -128,7 +128,7 @@ public class Health : MonoBehaviour {
 
 		//TODO play death animation
 		gameObject.SetActive (false);
-		GameObject.Destroy (this.gameObject, 2);
+		GameObject.Destroy (this.gameObject);
 	}
 
 	public void Stun (float stunDuration)
