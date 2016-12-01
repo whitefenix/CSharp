@@ -10,57 +10,67 @@ public class UIScript : MonoBehaviour
      */
 
     [System.Serializable]
-	public class MainHandInstrument
+    public class MainHandInstrument
     {
         //TODO: Maybe implement variables for attack mode? 
-		public Texture mainTexture;
-		public Texture smallTexture;
-		public Texture selectedTexture;
+        public Texture mainTexture;
+        public Texture smallTexture;
+        public Texture selectedTexture;
         public string instrumentName;
         public GameObject tooltip;
         public AudioClip clip;
         public RawImage rawImage;
 
-		public PlayerAttack.Type type;
+        public PlayerAttack.Type type;
     }
 
-	[System.Serializable]
-	public class OffHandInstrument
-	{
-		//TODO: Maybe implement variables for attack mode? 
-		public Texture mainTexture;
-		public Texture smallTexture;
-		public Texture selectedTexture;
-		public string instrumentName;
-		public GameObject tooltip;
-		public AudioClip clip;
-		public RawImage rawImage;
+    [System.Serializable]
+    public class OffHandInstrument
+    {
+        //TODO: Maybe implement variables for attack mode? 
+        public Texture mainTexture;
+        public Texture smallTexture;
+        public Texture selectedTexture;
+        public string instrumentName;
+        public GameObject tooltip;
+        public AudioClip clip;
+        public RawImage rawImage;
 
-		public PlayerAttack.Perk perk;
-	}
+        public PlayerAttack.Perk perk;
+    }
+
+    [System.Serializable]
+    public class HealthDiamond
+    {
+        public Texture texture;
+        public string diamondName;
+        public RawImage rawImage;
+    }
 
     public RawImage MainSlot;
     public RawImage OffSlot;
+    public RawImage HealthBar;
 
     public GameObject mainMenuPanel;
     public GameObject offMenuPanel;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
-	public MainHandInstrument[] mainhandInstruments;
-	public OffHandInstrument[] offhandInstruments;
+    public MainHandInstrument[] mainhandInstruments;
+    public OffHandInstrument[] offhandInstruments;
+    public HealthDiamond[] healthDiamonds;
 
-    [HideInInspector] 
-	public MainHandInstrument mainHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
-	[HideInInspector] 
-	public OffHandInstrument offHand;
+    [HideInInspector]
+    public MainHandInstrument mainHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
+    [HideInInspector]
+    public OffHandInstrument offHand;
 
     //true if the menu is open
     private bool mainMenu = false, offMenu = false;
 
     //position in menu, number of instruments, index of equipped instrument
-    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
+    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0, num_healthDiamonds = 12;
 
-	private PlayerAttack attack;
+    private PlayerAttack attack;
 
     private Light lights;
 
@@ -71,17 +81,25 @@ public class UIScript : MonoBehaviour
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
 
-		//COMMENT use UI overlay instead - Mr. H
+        num_healthDiamonds = healthDiamonds.Length;
+        //currentHealth = healthDiamonds[currentDiamond]; //arrayindex out of bounds
+
+        //COMMENT use UI overlay instead - Mr. H
         GameObject lightsource = GameObject.Find("Directional Light");
         lights = lightsource.GetComponent<Light>();
 
         attack = GetComponent<PlayerAttack>();
 
-		//attack.SetCurrentInstrument(mainHand.type);
-		//attack.SetCurrentPerk(offHand.perk);
+        //attack.SetCurrentInstrument(mainHand.type);
+        //attack.SetCurrentPerk(offHand.perk);
 
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
+        //healthBar.SetActive(true);
+
+        //ok?
+        //set healthslots to be active?
+        updateHealthDiamonds();
     }
 
     //called every frame
@@ -93,7 +111,7 @@ public class UIScript : MonoBehaviour
             if (lights.intensity > 0.1f)
             {
                 lights.intensity -= 5.0f * Time.deltaTime;
-            }       
+            }
         }
         else
         {
@@ -104,11 +122,13 @@ public class UIScript : MonoBehaviour
             }
         }
         InputHandler();
+        //test - should this really be called in update? Inefficient
+        updateHealthDiamonds();
     }
 
     void InputHandler()
     {
-		if (CloseMenuInputTriggered() == true)
+        if (CloseMenuInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -120,7 +140,7 @@ public class UIScript : MonoBehaviour
             }
 
         }
-		if (NavRightInputTriggered() == true)
+        if (NavRightInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -148,7 +168,7 @@ public class UIScript : MonoBehaviour
 
         }
 
-		if (NavLeftInputTriggered() == true)
+        if (NavLeftInputTriggered() == true)
         {
             if (mainMenu)
             {
@@ -174,7 +194,7 @@ public class UIScript : MonoBehaviour
             }
         }
 
-		if (MainMenuInputTriggered() == true)
+        if (MainMenuInputTriggered() == true)
         {
             //I hate reading one line ifs. If you want them you can change this.
             //Turn menu on if it was off, close it if it was on
@@ -187,7 +207,7 @@ public class UIScript : MonoBehaviour
                 mainMenu = true;
             }
         }
-		else if (OffMenuInputTriggered() == true)
+        else if (OffMenuInputTriggered() == true)
         {
             //Turn menu on if it was off, close it if it was on
             if (offMenu == true)
@@ -209,10 +229,11 @@ public class UIScript : MonoBehaviour
         if (currentMain != mainMenuPos)
         {
             currentMain = mainMenuPos;
-            mainHand = mainhandInstruments[currentMain];
-			//attack.currentInstrument = mainHand.type;
-			attack.SetCurrentInstrument(mainHand.type);
-            MainSlot.texture = mainHand.mainTexture;
+            mainHand = mainhandInstruments[currentMain]; //retrieve correct GameObject
+            //attack.currentInstrument = mainHand.type;
+            attack.SetCurrentInstrument(mainHand.type);
+            MainSlot.texture = mainHand.mainTexture; //set texture of main object (a raw image) to the texture of the correct GameObject
+            //build 12 slots to be filled?!
         }
         mainMenuPos = currentMain;
         mainMenu = false;
@@ -228,12 +249,37 @@ public class UIScript : MonoBehaviour
         {
             currentOff = offMenuPos;
             offHand = offhandInstruments[currentOff];
-			attack.SetCurrentPerk(offHand.perk);
+            attack.SetCurrentPerk(offHand.perk);
             OffSlot.texture = offHand.mainTexture;
         }
         offMenuPos = currentOff;
         offMenu = false;
         offMenuPanel.SetActive(false);
+    }
+
+    void updateHealthDiamonds()
+    {
+        //Get the current health-value
+        GameObject thePlayer = GameObject.Find("Player");
+        Health playerHealth = thePlayer.GetComponent<Health>();
+        float tmpHealth = (playerHealth.health / playerHealth.maximumHealth) * 12;
+
+        //round to closest int
+        int pic = (int)Mathf.Round(tmpHealth) - 1;
+        if (pic > 11)
+        {
+            pic = 11;
+        }
+        if (pic < 0)
+        {
+            pic = 0;
+        }
+
+        //change health bar picture
+        HealthDiamond currentHealth = healthDiamonds[pic];
+        HealthBar.texture = currentHealth.texture;
+
+
     }
 
     /*
@@ -251,7 +297,7 @@ public class UIScript : MonoBehaviour
                     mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].selectedTexture;
                     mainhandInstruments[i].tooltip.SetActive(true);
                 }
-                else 
+                else
                 {
                     mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].smallTexture;
                     mainhandInstruments[i].tooltip.SetActive(false);
@@ -279,25 +325,30 @@ public class UIScript : MonoBehaviour
 
     }
 
-	bool MainMenuInputTriggered() {
-		return Input.GetKeyDown (KeyCode.G) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_X);
-	}
+    bool MainMenuInputTriggered()
+    {
+        return Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_X);
+    }
 
-	bool OffMenuInputTriggered() {
-		return Input.GetKeyDown (KeyCode.H) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_B);
-	}
+    bool OffMenuInputTriggered()
+    {
+        return Input.GetKeyDown(KeyCode.H) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_B);
+    }
 
-	bool NavLeftInputTriggered() {
-		return Input.GetKeyDown (KeyCode.J) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_LB);
-	}
+    bool NavLeftInputTriggered()
+    {
+        return Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_LB);
+    }
 
-	bool NavRightInputTriggered() {
-		return Input.GetKeyDown (KeyCode.K) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_RB);
-	}
+    bool NavRightInputTriggered()
+    {
+        return Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_RB);
+    }
 
-	bool CloseMenuInputTriggered() {
-		return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_Y);
-	}
+    bool CloseMenuInputTriggered()
+    {
+        return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_Y);
+    }
 }
 ///Author(s): Samuel Ekne, Julia von Heijne
 ///Date: 10-11-2016
