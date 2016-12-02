@@ -39,14 +39,6 @@ public class UIScript : MonoBehaviour
         public PlayerAttack.Perk perk;
     }
 
-    [System.Serializable]
-    public class HealthDiamond
-    {
-        public Texture texture;
-        public string diamondName;
-        public RawImage rawImage;
-    }
-
     public RawImage MainSlot;
     public RawImage OffSlot;
     public RawImage HealthBar;
@@ -54,10 +46,12 @@ public class UIScript : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject offMenuPanel;
 
+	private GameObject overlay;
+
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public MainHandInstrument[] mainhandInstruments;
     public OffHandInstrument[] offhandInstruments;
-    public HealthDiamond[] healthDiamonds;
+    public Texture[] healthDiamonds;
 
     [HideInInspector]
     public MainHandInstrument mainHand; //currently equipped instruments, could maybe be integrated and removed? Change if performance is an issue
@@ -84,9 +78,8 @@ public class UIScript : MonoBehaviour
         num_healthDiamonds = healthDiamonds.Length;
         //currentHealth = healthDiamonds[currentDiamond]; //arrayindex out of bounds
 
-        //COMMENT use UI overlay instead - Mr. H
-        GameObject lightsource = GameObject.Find("Directional Light");
-        lights = lightsource.GetComponent<Light>();
+		overlay = GameObject.Find("Canvas/Overlay");
+		overlay.SetActive (false);
 
         attack = GetComponent<PlayerAttack>();
 
@@ -108,18 +101,10 @@ public class UIScript : MonoBehaviour
         if (mainMenu || offMenu)
         {
             Time.timeScale = 0.1f;
-            if (lights.intensity > 0.1f)
-            {
-                lights.intensity -= 5.0f * Time.deltaTime;
-            }
         }
         else
         {
             Time.timeScale = 1.0f;
-            if (lights.intensity < 1.0f)
-            {
-                lights.intensity += 0.5f * Time.deltaTime;
-            }
         }
         InputHandler();
         //test - should this really be called in update? Inefficient
@@ -138,7 +123,6 @@ public class UIScript : MonoBehaviour
             {
                 closeOffMenu();
             }
-
         }
         if (NavRightInputTriggered() == true)
         {
@@ -165,7 +149,6 @@ public class UIScript : MonoBehaviour
                     offMenuPos++;
                 }
             }
-
         }
 
         if (NavLeftInputTriggered() == true)
@@ -206,6 +189,7 @@ public class UIScript : MonoBehaviour
             {
                 mainMenu = true;
             }
+			overlay.SetActive(true);
         }
         else if (OffMenuInputTriggered() == true)
         {
@@ -218,6 +202,7 @@ public class UIScript : MonoBehaviour
             {
                 offMenu = true;
             }
+			overlay.SetActive(true);
         }
     }
 
@@ -238,6 +223,8 @@ public class UIScript : MonoBehaviour
         mainMenuPos = currentMain;
         mainMenu = false;
         mainMenuPanel.SetActive(false);
+
+		overlay.SendMessage("FadeOut");
     }
 
     /*
@@ -255,6 +242,8 @@ public class UIScript : MonoBehaviour
         offMenuPos = currentOff;
         offMenu = false;
         offMenuPanel.SetActive(false);
+
+		overlay.SendMessage("FadeOut");
     }
 
     void updateHealthDiamonds()
@@ -276,10 +265,7 @@ public class UIScript : MonoBehaviour
         }
 
         //change health bar picture
-        HealthDiamond currentHealth = healthDiamonds[pic];
-        HealthBar.texture = currentHealth.texture;
-
-
+		HealthBar.texture = healthDiamonds[pic];
     }
 
     /*
