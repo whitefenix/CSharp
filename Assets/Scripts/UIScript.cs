@@ -67,9 +67,6 @@ public class UIScript : MonoBehaviour
 
     private PlayerAttack attack;
 
-    public GameObject overlay;
-    private Image overlayImage;
-
     void Start()
     {
         num_offInstruments = offhandInstruments.Length;
@@ -88,8 +85,6 @@ public class UIScript : MonoBehaviour
         //attack.SetCurrentInstrument(mainHand.type);
         //attack.SetCurrentPerk(offHand.perk);
 
-        overlayImage = overlay.GetComponent<Image>();
-
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
         //healthBar.SetActive(true);
@@ -102,7 +97,7 @@ public class UIScript : MonoBehaviour
     //called every frame
     void Update()
     {
-        var tempColor = overlayImage.color;
+        //var tempColor = overlayImage.color;
         if (mainMenu || offMenu)
         {
             Time.timeScale = 0.1f;
