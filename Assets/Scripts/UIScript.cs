@@ -62,11 +62,13 @@ public class UIScript : MonoBehaviour
     private bool mainMenu = false, offMenu = false;
 
     //position in menu, number of instruments, index of equipped instrument
-    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0, num_healthDiamonds = 12;
+    private int mainMenuPos = 0, offMenuPos = 0, num_mainInstruments = 2, num_offInstruments = 2, currentMain = 0, currentOff = 0;
+        //num_healthDiamonds = 12;
 
     private PlayerAttack attack;
 
-    private Light lights;
+    public GameObject overlay;
+    private Image overlayImage;
 
     void Start()
     {
@@ -75,7 +77,7 @@ public class UIScript : MonoBehaviour
         mainHand = mainhandInstruments[currentMain];
         offHand = offhandInstruments[currentOff];
 
-        num_healthDiamonds = healthDiamonds.Length;
+       // num_healthDiamonds = healthDiamonds.Length;
         //currentHealth = healthDiamonds[currentDiamond]; //arrayindex out of bounds
 
 		overlay = GameObject.Find("Canvas/Overlay");
@@ -85,6 +87,8 @@ public class UIScript : MonoBehaviour
 
         //attack.SetCurrentInstrument(mainHand.type);
         //attack.SetCurrentPerk(offHand.perk);
+
+        overlayImage = overlay.GetComponent<Image>();
 
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
@@ -98,14 +102,26 @@ public class UIScript : MonoBehaviour
     //called every frame
     void Update()
     {
+        var tempColor = overlayImage.color;
         if (mainMenu || offMenu)
         {
             Time.timeScale = 0.1f;
+//            if (tempColor.a < 0.35f)
+//            {
+//                tempColor.a += 5.0f * Time.deltaTime;
+//                overlayImage.color = tempColor;
+//            }
         }
         else
         {
             Time.timeScale = 1.0f;
+//            if (tempColor.a > 0.01f)
+//            {
+//                tempColor.a -= 0.5f * Time.deltaTime;
+//                overlayImage.color = tempColor;
+//            }
         }
+
         InputHandler();
         //test - should this really be called in update? Inefficient
         updateHealthDiamonds();
