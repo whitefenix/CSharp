@@ -26,6 +26,11 @@ public class MainMenu : MonoBehaviour {
 		//SceneManager.LoadScene ("Quest");
 	}
 
+	public void LoadMainMenuScene ()
+	{
+		SceneManager.LoadScene ("MainMenu");
+	}
+
 	public void ExitGame ()
 	{
 		Application.Quit();

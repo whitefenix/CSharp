@@ -14,16 +14,17 @@ public class EnemyDeath : MonoBehaviour {
 
 	void OnApplicationQuit()
 	{
+		//DOES NOT WORK ON SCENE RELOAD
 		isQuitting = true;
 	}
+
 	void OnDestroy()
 	{
+		//DOES NOT WORK ON SCENE RELOAD
 		if (!isQuitting)
 		{
-			Debug.Log ("destroy");
-
-			GameObject spawned = (GameObject)Instantiate (death, transform.position, Quaternion.identity);
-			Destroy (spawned, deathTime);
+//			GameObject spawned = (GameObject)Instantiate (death, transform.position, Quaternion.identity);
+//			Destroy (spawned, deathTime);
 		}
 	}
 }

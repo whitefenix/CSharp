@@ -47,6 +47,7 @@ public class UIScript : MonoBehaviour
     public GameObject offMenuPanel;
 
 	private GameObject overlay;
+	private GameObject pauseMenu;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public MainHandInstrument[] mainhandInstruments;
@@ -79,6 +80,9 @@ public class UIScript : MonoBehaviour
 
 		overlay = GameObject.Find("Canvas/Overlay");
 		overlay.SetActive (false);
+
+		pauseMenu = GameObject.Find ("Canvas/PauseMenu");
+		pauseMenu.SetActive (false);
 
         attack = GetComponent<PlayerAttack>();
 
@@ -215,6 +219,18 @@ public class UIScript : MonoBehaviour
             }
 			overlay.SetActive(true);
         }
+
+		if (PauseInputTriggered () == true) 
+		{
+			if (pauseMenu.activeInHierarchy == true) 
+			{
+				closePauseMenu ();
+			} 
+			else if (pauseMenu.activeInHierarchy == false) 
+			{
+				openPauseMenu ();
+			}
+		}
     }
 
     /*
@@ -256,6 +272,27 @@ public class UIScript : MonoBehaviour
 
 		overlay.SendMessage("FadeOut");
     }
+
+	public void openPauseMenu()
+	{
+		if (mainMenu)
+		{
+			closeMainMenu();
+		}
+		else if (offMenu)
+		{
+			closeOffMenu();
+		}
+
+		Time.timeScale = 0.0f;
+		pauseMenu.SetActive (true);
+	}
+
+	public void closePauseMenu()
+	{
+		pauseMenu.SetActive (false);
+		Time.timeScale = 1.0f;
+	}
 
     void updateHealthDiamonds()
     {
@@ -346,6 +383,11 @@ public class UIScript : MonoBehaviour
     {
         return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_Y);
     }
+
+	bool PauseInputTriggered()
+	{
+		return Input.GetKeyDown(KeyCode.Escape);
+	}
 }
 ///Author(s): Samuel Ekne, Julia von Heijne
 ///Date: 10-11-2016
