@@ -33,7 +33,7 @@ public class EnemyMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Time.time >= moveTimeout) 
+		if (Time.time >= moveTimeout && player != null) 
 		{
 			targetDistance = Vector3.Distance (player.position, transform.position);
 

@@ -48,6 +48,7 @@ public class UIScript : MonoBehaviour
 
 	private GameObject overlay;
 	private GameObject pauseMenu;
+	private GameObject gameOverMenu;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public MainHandInstrument[] mainhandInstruments;
@@ -83,6 +84,9 @@ public class UIScript : MonoBehaviour
 
 		pauseMenu = GameObject.Find ("Canvas/PauseMenu");
 		pauseMenu.SetActive (false);
+
+		gameOverMenu = GameObject.Find ("Canvas/GameOver");
+		gameOverMenu.SetActive (false);
 
         attack = GetComponent<PlayerAttack>();
 
@@ -358,6 +362,12 @@ public class UIScript : MonoBehaviour
         }
 
     }
+
+	public void OnDeath()
+	{
+		gameOverMenu.SetActive (true);
+		Time.timeScale = 0.0f;
+	}
 
     bool MainMenuInputTriggered()
     {

@@ -12,6 +12,12 @@ public class EnemyDeath : MonoBehaviour {
 	{
 	}
 
+	public void OnDeath()
+	{
+		GameObject spawned = (GameObject)Instantiate (death, transform.position, Quaternion.identity);
+		Destroy (spawned, deathTime);
+	}
+
 	void OnApplicationQuit()
 	{
 		//DOES NOT WORK ON SCENE RELOAD

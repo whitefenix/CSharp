@@ -124,11 +124,8 @@ public class Health : MonoBehaviour {
 	{
 		dead = true;
 
-		//Debug.Log (this.name + " died!");
-
-		//TODO play death animation
-		gameObject.SetActive (false);
-		GameObject.Destroy (this.gameObject);
+		gameObject.SendMessage ("OnDeath", SendMessageOptions.DontRequireReceiver);
+		GameObject.Destroy (gameObject);
 	}
 
 	public void Stun (float stunDuration)

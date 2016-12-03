@@ -19,17 +19,20 @@ public class CameraFollowPlayer : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void LateUpdate () {
+	void LateUpdate () 
+	{
+		if (player != null) 
+		{
+			Vector3 newPosition = player.position;
+			newPosition.y = 0;
+			newPosition += offset;
 
-		Vector3 newPosition = player.position;
-		newPosition.y = 0;
-		newPosition += offset;
+			newPosition.x = Mathf.Clamp (newPosition.x, minX, maxX);
+			newPosition.z = Mathf.Clamp (newPosition.z, minZ, maxZ);
 
-		newPosition.x = Mathf.Clamp (newPosition.x, minX, maxX);
-		newPosition.z = Mathf.Clamp (newPosition.z, minZ, maxZ);
+			//transform.position = Vector3.Lerp (transform.position, newPosition, (transform.position - newPosition).magnitude);
 
-		//transform.position = Vector3.Lerp (transform.position, newPosition, (transform.position - newPosition).magnitude);
-
-		transform.position = newPosition;
+			transform.position = newPosition;
+		}
 	}
 }
