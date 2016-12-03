@@ -35,6 +35,7 @@ public class HealthPotion : MonoBehaviour {
 			Health otherHealth = other.gameObject.GetComponent<Health> ();
 			otherHealth.heal (restoreHealth);
 
+			gameObject.SendMessage ("OnCollected", SendMessageOptions.DontRequireReceiver);
 			Destroy (gameObject);
 		}
 	}
