@@ -3,7 +3,7 @@ using System.Collections;
 
 public class QuestTarget : MonoBehaviour {
 
-	private Quest.QuestCondition condition;
+	private PlayerQuests.QuestCondition condition;
 
 	// Use this for initialization
 	void Start () {
@@ -15,35 +15,35 @@ public class QuestTarget : MonoBehaviour {
 
 	}
 
-	public void RegisterQuest(Quest.QuestCondition qc)
+	public void RegisterQuest(PlayerQuests.QuestCondition qc)
 	{
 		condition = qc;
 	}
 
 	public void OnDeath()
 	{
-		if (condition != null && condition.action == Quest.Action.KILL) 
+		if (condition != null && condition.action == PlayerQuests.Action.KILL) 
 		{
 			condition.conditionMet = true;
-			Quest.CheckQuest (condition.parentItem);
+			PlayerQuests.CheckQuest (condition.parentItem);
 		}
 	}
 
 	public void OnCollected()
 	{
-		if (condition != null && condition.action == Quest.Action.COLLECT) 
+		if (condition != null && condition.action == PlayerQuests.Action.COLLECT) 
 		{
 			condition.conditionMet = true;
-			Quest.CheckQuest (condition.parentItem);
+			PlayerQuests.CheckQuest (condition.parentItem);
 		}
 	}
 
 	public void OnTalk()
 	{
-		if (condition != null && condition.action == Quest.Action.TALK) 
+		if (condition != null && condition.action == PlayerQuests.Action.TALK) 
 		{
 			condition.conditionMet = true;
-			Quest.CheckQuest (condition.parentItem);
+			PlayerQuests.CheckQuest (condition.parentItem);
 		}
 	}
 }
