@@ -16,6 +16,7 @@ public class QuestTarget : MonoBehaviour {
 	public Type targetType;
 	private PlayerQuests playerQuests;
 	private PlayerQuests.QuestCondition condition;
+	public GameObject questTargetIndicator;
 
 	// Use this for initialization
 	void Start () 
@@ -26,6 +27,11 @@ public class QuestTarget : MonoBehaviour {
 	public void RegisterQuest(PlayerQuests.QuestCondition qc)
 	{
 		condition = qc;
+
+		if (questTargetIndicator != null) 
+		{
+			GameObject indicator = Instantiate (questTargetIndicator, transform, false) as GameObject;
+		}
 	}
 
 	public void OnDeath()
