@@ -8,15 +8,14 @@ public class PlayerQuests : MonoBehaviour {
 	public enum Action {
 		COLLECT = 0,
 		KILL,
-		TALK
+		TALK,
+		COLLECT_TYPE,
+		KILL_TYPE
 	}
 
 	[System.Serializable]
 	public class QuestItem
 	{
-		[System.NonSerialized]
-		public PlayerQuests owner;
-
 		[Header("General:")]
 		public bool isMainQuest;
 
@@ -40,18 +39,25 @@ public class PlayerQuests : MonoBehaviour {
 		[HideInInspector]
 		public bool conditionMet;
 
+		public string shortDescription;
 		public Action action;
 		public GameObject target;
 
-		public string shortDescription;
+		[Header("Type Quests only:")]
+		public QuestTarget.Type targetType = QuestTarget.Type.NONE;
+		public int targetCount;
+		[HideInInspector]
+		public int currentCount = 0;
 	}
 
-	public List<PlayerQuests.QuestItem> quests; 
+	public List<QuestItem> quests; 
+	public Dictionary<uint, List<QuestCondition>> typeQuests;
 	public static Text questListText;
 
 	// Use this for initialization
 	void Start ()
 	{
+		typeQuests = new Dictionary<uint, List<QuestCondition>> ();
 		questListText = GameObject.Find ("Canvas/Quests/QuestList").GetComponent<Text>();
 
 		foreach (PlayerQuests.QuestItem q in quests) 
@@ -70,31 +76,32 @@ public class PlayerQuests : MonoBehaviour {
 
 	string GetQuestRichtext(QuestItem q)
 	{
-		string text = "";
+		string text = "", cPrefix = "", cPostfix = "", count = "";
+		if (q.questFinished) 
+		{
+			cPrefix = "<color=#B0B0B0FF>";
+			cPostfix = "</color>";
+		}
 
-		if (q.questFinished)
-			text += "<color=#B0B0B0FF>";
-
-		text += "<b>" + q.title + "</b>";
-
-		if(q.questFinished)
-			text += "</color>";
-
-		text += "\n";
+		text += string.Format("{0}<b>{1}</b>{2}\n", cPrefix, q.title, cPostfix);
 
 		foreach (QuestCondition qc in q.conditionList) 
 		{
-			text += " - <i>";
+			cPrefix = "";
+			cPostfix = "";
+			if (qc.conditionMet) 
+			{
+				cPrefix = "<color=#B0B0B0FF>";
+				cPostfix = "</color>";
+			}
 
-			if (qc.conditionMet)
-				text += "<color=#B0B0B0FF>";
+			count = "";
+			if (qc.action == Action.COLLECT_TYPE || qc.action == Action.KILL_TYPE) 
+			{
+				count = string.Format("({0}/{1})", qc.currentCount, qc.targetCount);
+			}
 
-			text += qc.shortDescription;
-
-			if(qc.conditionMet)
-				text += "</color>";
-
-			text += "</i>\n";
+			text += string.Format ("{0} - <i>{1}</i>{2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
 		}
 
 		text += "\n";
@@ -104,8 +111,6 @@ public class PlayerQuests : MonoBehaviour {
 
 	private void PrepareQuest(QuestItem q)
 	{
-		q.owner = this;
-
 		QuestTarget tmp;
 
 		foreach (QuestCondition qc in q.conditionList) 
@@ -125,6 +130,17 @@ public class PlayerQuests : MonoBehaviour {
 					qc.conditionMet = true;
 				}
 			} 
+			else if (qc.targetType != QuestTarget.Type.NONE)
+			{
+				uint key = GetTargetTypeActionKey (qc);
+
+				if (!typeQuests.ContainsKey (key)) 
+				{
+					typeQuests.Add(key, new List<QuestCondition>());
+				} 
+
+				typeQuests[key].Add (qc);
+			}
 			else 
 			{
 				qc.conditionMet = true;
@@ -132,7 +148,17 @@ public class PlayerQuests : MonoBehaviour {
 		}
 	}
 
-	public static void CheckQuest(QuestItem q)
+	public static uint GetTargetTypeActionKey(QuestCondition qc)
+	{
+		return GetTargetTypeActionKey(qc.targetType, qc.action);
+	}
+
+	public static uint GetTargetTypeActionKey(QuestTarget.Type type, Action action)
+	{
+		return (uint)type + (uint)action;
+	}
+
+	public void CheckQuest(QuestItem q)
 	{
 		bool questFinished = true;
 
@@ -147,7 +173,30 @@ public class PlayerQuests : MonoBehaviour {
 
 		q.questFinished = questFinished;
 
-		q.owner.UpdateQuestDisplay ();
+		UpdateQuestDisplay ();
+	}
+
+	public void NotifyTypeQuest(QuestTarget.Type type, Action action)
+	{
+		var key = GetTargetTypeActionKey (type, action);
+
+		if (typeQuests.ContainsKey (key)) 
+		{
+			foreach (QuestCondition qc in typeQuests [key]) 
+			{
+				qc.currentCount++;
+
+				if (qc.currentCount >= qc.targetCount)
+				{
+					qc.conditionMet = true;
+					typeQuests.Remove (key);
+
+					CheckQuest (qc.parentItem);
+				}
+			}
+
+			UpdateQuestDisplay ();
+		}
 	}
 
 	public void UpdateQuestDisplay() 
