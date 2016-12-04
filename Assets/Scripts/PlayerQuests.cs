@@ -18,9 +18,16 @@ public class PlayerQuests : MonoBehaviour {
 	{
 		[Header("General:")]
 		public bool isMainQuest;
+		public bool mandatoryOrder;
+
+		[HideInInspector]
+		public int conditionIdx;
 
 		[HideInInspector]
 		public bool questFinished;
+
+		[HideInInspector]
+		public bool prepared;
 
 		[Header("Display:")]
 		public string title;
@@ -33,6 +40,9 @@ public class PlayerQuests : MonoBehaviour {
 	[System.Serializable]
 	public class QuestCondition
 	{
+		[HideInInspector]
+		public int idx;
+
 		//[HideInInspector]
 		[System.NonSerialized]
 		public QuestItem parentItem;
@@ -68,10 +78,21 @@ public class PlayerQuests : MonoBehaviour {
 		UpdateQuestDisplay ();
 	}
 
-	public void AddQuest (PlayerQuests.QuestItem q) 
+	public void AddQuests (List<QuestItem> qs) 
+	{
+		foreach (QuestItem q in qs)
+		{
+			quests.Add (q);
+			PrepareQuest (q);
+		}
+		UpdateQuestDisplay ();
+	}
+
+	public void AddQuests (QuestItem q) 
 	{
 		quests.Add (q);
 		PrepareQuest (q);
+		UpdateQuestDisplay ();
 	}
 
 	string GetQuestRichtext(QuestItem q)
@@ -87,6 +108,9 @@ public class PlayerQuests : MonoBehaviour {
 
 		foreach (QuestCondition qc in q.conditionList) 
 		{
+			if (q.mandatoryOrder && qc.idx > q.conditionIdx)
+				continue;
+
 			cPrefix = "";
 			cPostfix = "";
 			if (qc.conditionMet) 
@@ -112,10 +136,12 @@ public class PlayerQuests : MonoBehaviour {
 	private void PrepareQuest(QuestItem q)
 	{
 		QuestTarget tmp;
+		int idx = 0;
 
 		foreach (QuestCondition qc in q.conditionList) 
 		{
 			qc.parentItem = q;
+			qc.idx = idx++;
 
 			if (qc.target != null) 
 			{
@@ -146,6 +172,8 @@ public class PlayerQuests : MonoBehaviour {
 				qc.conditionMet = true;
 			}
 		}
+
+		q.prepared = true;
 	}
 
 	public static uint GetTargetTypeActionKey(QuestCondition qc)
@@ -164,10 +192,13 @@ public class PlayerQuests : MonoBehaviour {
 
 		foreach (QuestCondition qc in q.conditionList) 
 		{
-			if (qc.conditionMet == false) 
-			{
+			if (qc.conditionMet == false) {
 				questFinished = false;
 				break;
+			} 
+			else if (qc.conditionMet == true && q.conditionIdx <= qc.idx)
+			{
+				q.conditionIdx = qc.idx + 1;
 			}
 		}
 
@@ -182,6 +213,8 @@ public class PlayerQuests : MonoBehaviour {
 
 		if (typeQuests.ContainsKey (key)) 
 		{
+			List<QuestCondition> tmpToRemove = new List<QuestCondition> ();
+
 			foreach (QuestCondition qc in typeQuests [key]) 
 			{
 				qc.currentCount++;
@@ -189,13 +222,31 @@ public class PlayerQuests : MonoBehaviour {
 				if (qc.currentCount >= qc.targetCount)
 				{
 					qc.conditionMet = true;
-					typeQuests.Remove (key);
+
+					tmpToRemove.Add (qc);
 
 					CheckQuest (qc.parentItem);
 				}
 			}
 
+			foreach (QuestCondition qc in tmpToRemove) 
+			{
+				typeQuests[key].Remove(qc);
+			}
+
 			UpdateQuestDisplay ();
+		}
+	}
+
+	public static bool CorrectOrder(QuestCondition qc)
+	{
+		if (qc.parentItem.mandatoryOrder) 
+		{
+			return qc.idx == qc.parentItem.conditionIdx;
+		} 
+		else 
+		{
+			return true;
 		}
 	}
 

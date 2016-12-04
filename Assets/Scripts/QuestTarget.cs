@@ -10,7 +10,8 @@ public class QuestTarget : MonoBehaviour {
 		ENEMY_MINION,
 		ENEMY_WALKER,
 		ENEMY_GOLEM,
-		ITEM_HP_POTION
+		ITEM_HP_POTION,
+		NPC_PEASANT
 	}
 
 	public Type targetType;
@@ -36,7 +37,8 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnDeath()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.KILL) 
+		if (condition != null && condition.action == PlayerQuests.Action.KILL 
+			&& PlayerQuests.CorrectOrder(condition)) 
 		{
 			condition.conditionMet = true;
 			playerQuests.CheckQuest (condition.parentItem);
@@ -47,7 +49,8 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnCollected()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.COLLECT) 
+		if (condition != null && condition.action == PlayerQuests.Action.COLLECT 
+			&& PlayerQuests.CorrectOrder(condition)) 
 		{
 			condition.conditionMet = true;
 			playerQuests.CheckQuest (condition.parentItem);
@@ -58,7 +61,8 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnTalk()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.TALK) 
+		if (condition != null && condition.action == PlayerQuests.Action.TALK 
+			&& PlayerQuests.CorrectOrder(condition)) 
 		{
 			condition.conditionMet = true;
 			playerQuests.CheckQuest (condition.parentItem);

@@ -69,7 +69,13 @@ public class PlayerAttack : MonoBehaviour {
 	private Perk offHandPerk;
 	private Type mainHandIdx;
 
+	private bool talkingToNPC = false;
+	private PlayerQuests quests;
+	private NPCTalk talkingNPC;
+
 	private Vector3 missileSpawnHeight = Vector3.up;
+
+	public List<BonusItem> bonusItems;
 
 	public void SetCurrentPerk(Perk perk)
 	{
@@ -94,7 +100,9 @@ public class PlayerAttack : MonoBehaviour {
 	{
 		killedEnemies = new List<GameObject> ();
 		combatRange = GetComponentsInChildren<CombatRange>()[0];
-		animator = this.GetComponentsInChildren<Animator>()[0];
+		animator = GetComponentsInChildren<Animator>()[0];
+		quests = GetComponent<PlayerQuests> ();
+		bonusItems = new List<BonusItem> ();
 
 		//TODO do somewhere else... init problems
 		SetCurrentInstrument (Type.VIOLIN);
@@ -104,7 +112,23 @@ public class PlayerAttack : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Time.time >= attackTimeout && AttackInputTriggered ()) {
+		if (talkingToNPC && AttackInputTriggered ()) 
+		{
+			if (!talkingNPC.Talk ()) 
+			{
+				if (talkingNPC.HasOpenQuest ()) 
+				{
+					quests.AddQuests (talkingNPC.RequestQuest());
+				}
+
+				if (talkingNPC.HasGift ()) 
+				{
+					bonusItems.Add(talkingNPC.reward);
+				}
+			}
+		} 
+		else if (Time.time >= attackTimeout && AttackInputTriggered ()) 
+		{
 			MainInstrument currentInstrument = GetMainInstrument ();
 			switch (currentInstrument.mode) {
 			case Mode.SINGLE_MEELE:
@@ -233,5 +257,23 @@ public class PlayerAttack : MonoBehaviour {
 	private bool AttackInputTriggered() 
 	{
 		return Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_A);
+	}
+
+	void OnTriggerEnter (Collider other) 
+	{
+		if (other.tag == "NPC") 
+		{
+			talkingToNPC = true;
+			talkingNPC = other.gameObject.GetComponent<NPCTalk> ();
+		}
+	}
+
+	void OnTriggerExit (Collider other) 
+	{
+		if (other.tag == "NPC") 
+		{
+			talkingToNPC = false;
+			talkingNPC = null;
+		}
 	}
 }
