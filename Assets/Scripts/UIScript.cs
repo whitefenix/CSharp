@@ -13,13 +13,13 @@ public class UIScript : MonoBehaviour
     public class MainHandInstrument
     {
         //TODO: Maybe implement variables for attack mode? 
-        public Texture mainTexture;
-        public Texture smallTexture;
-        public Texture selectedTexture;
+        public Sprite mainSprite;
+        public Sprite smallSprite;
+        public Sprite selectedSprite;
         public string instrumentName;
         public GameObject tooltip;
         public AudioClip clip;
-        public RawImage rawImage;
+        public Image image;
 
         public PlayerAttack.Type type;
     }
@@ -28,19 +28,19 @@ public class UIScript : MonoBehaviour
     public class OffHandInstrument
     {
         //TODO: Maybe implement variables for attack mode? 
-        public Texture mainTexture;
-        public Texture smallTexture;
-        public Texture selectedTexture;
+        public Sprite mainSprite;
+        public Sprite smallSprite;
+        public Sprite selectedSprite;
         public string instrumentName;
         public GameObject tooltip;
         public AudioClip clip;
-        public RawImage rawImage;
+        public Image image;
 
         public PlayerAttack.Perk perk;
     }
 
-    public RawImage MainSlot;
-    public RawImage OffSlot;
+    public Image MainSlot;
+    public Image OffSlot;
     public RawImage HealthBar;
 
     public GameObject mainMenuPanel;
@@ -248,7 +248,7 @@ public class UIScript : MonoBehaviour
             mainHand = mainhandInstruments[currentMain]; //retrieve correct GameObject
             //attack.currentInstrument = mainHand.type;
             attack.SetCurrentInstrument(mainHand.type);
-            MainSlot.texture = mainHand.mainTexture; //set texture of main object (a raw image) to the texture of the correct GameObject
+            MainSlot.sprite = mainHand.mainSprite; //set texture of main object (a raw image) to the texture of the correct GameObject
             //build 12 slots to be filled?!
         }
         mainMenuPos = currentMain;
@@ -268,7 +268,7 @@ public class UIScript : MonoBehaviour
             currentOff = offMenuPos;
             offHand = offhandInstruments[currentOff];
             attack.SetCurrentPerk(offHand.perk);
-            OffSlot.texture = offHand.mainTexture;
+            OffSlot.sprite = offHand.mainSprite;
         }
         offMenuPos = currentOff;
         offMenu = false;
@@ -332,12 +332,12 @@ public class UIScript : MonoBehaviour
             {
                 if (mainMenuPos == i) //if selected display selected texture/sprite
                 {
-                    mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].selectedTexture;
+                    mainhandInstruments[i].image.sprite = mainhandInstruments[i].selectedSprite;
                     mainhandInstruments[i].tooltip.SetActive(true);
                 }
                 else
                 {
-                    mainhandInstruments[i].rawImage.texture = mainhandInstruments[i].smallTexture;
+                    mainhandInstruments[i].image.sprite = mainhandInstruments[i].smallSprite;
                     mainhandInstruments[i].tooltip.SetActive(false);
                 }
             }
@@ -350,12 +350,12 @@ public class UIScript : MonoBehaviour
             {
                 if (offMenuPos == i) //if selected display selected texture/sprite
                 {
-                    offhandInstruments[i].rawImage.texture = offhandInstruments[i].selectedTexture;
+                    offhandInstruments[i].image.sprite = offhandInstruments[i].selectedSprite;
                     offhandInstruments[i].tooltip.SetActive(true);
                 }
                 else //This instrument i is not selected
                 {
-                    offhandInstruments[i].rawImage.texture = offhandInstruments[i].smallTexture;
+                    offhandInstruments[i].image.sprite = offhandInstruments[i].smallSprite;
                     offhandInstruments[i].tooltip.SetActive(false);
                 }
             }
