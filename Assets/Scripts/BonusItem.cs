@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum SkillBookType 
+{
+	OFFENSIVE,
+	DEFENSIVE
+}
+
 [System.Serializable]
 public class BonusItem 
 {
+	public SkillBookType type;
+	public string name;
+	[TextArea(3,10)]
+	public string toolTipDescription;
+
 	[Header("Player:")]
 	public float movementSpeed;
 	public float maximumHealth;
