@@ -68,7 +68,7 @@ public class PlayerQuests : MonoBehaviour {
 	void Start ()
 	{
 		typeQuests = new Dictionary<uint, List<QuestCondition>> ();
-		questListText = GameObject.Find ("Canvas/Quests/QuestList").GetComponent<Text>();
+		questListText = GameObject.Find ("Canvas/Quests/QuestLog/Text").GetComponent<Text>();
 
 		foreach (PlayerQuests.QuestItem q in quests) 
 		{
