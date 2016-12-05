@@ -11,6 +11,7 @@ public class QuestTarget : MonoBehaviour {
 		ENEMY_WALKER,
 		ENEMY_GOLEM,
 		ITEM_HP_POTION,
+		ITEM_SKILLBOOK,
 		NPC_PEASANT
 	}
 

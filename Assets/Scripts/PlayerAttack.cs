@@ -185,7 +185,7 @@ public class PlayerAttack : MonoBehaviour {
 		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);
 	}
 
-	private void EquipBonusItem(BonusItem bi, bool unequip = false)
+	public void EquipBonusItem(BonusItem bi, bool unequip = false)
 	{
 		int sign = 1;
 		if (unequip) 
