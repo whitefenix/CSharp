@@ -76,7 +76,7 @@ public class PlayerAttack : MonoBehaviour {
 	private Vector3 missileSpawnHeight = Vector3.up;
 
 	private BonusItem biAggr;
-	private List<BonusItem> bonusItems;
+	public List<BonusItem> bonusItems;
 
 	public void SetCurrentPerk(Perk perk)
 	{
@@ -196,6 +196,8 @@ public class PlayerAttack : MonoBehaviour {
 		else 
 		{
 			bonusItems.Add (bi);
+
+			gameObject.SendMessage ("OnEqipSkillBook", SendMessageOptions.DontRequireReceiver);
 		}
 
 		biAggr.movementSpeed += bi.movementSpeed * sign;

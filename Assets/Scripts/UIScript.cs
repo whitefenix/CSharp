@@ -46,6 +46,15 @@ public class UIScript : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject offMenuPanel;
 
+	private GameObject offensiveSkillBook1;
+	private GameObject offensiveSkillBook2;
+	private GameObject defensiveSkillBook1;
+	private GameObject defensiveSkillBook2;
+	private GameObject offensiveSkillBook1TT;
+	private GameObject offensiveSkillBook2TT;
+	private GameObject defensiveSkillBook1TT;
+	private GameObject defensiveSkillBook2TT;
+
 	private GameObject overlay;
 	private GameObject pauseMenu;
 	private GameObject gameOverMenu;
@@ -87,6 +96,19 @@ public class UIScript : MonoBehaviour
 
 		gameOverMenu = GameObject.Find ("Canvas/GameOver");
 		gameOverMenu.SetActive (false);
+
+		offensiveSkillBook1 = GameObject.Find("Canvas/Panel/OffensivePowerUps/SkillBook1");
+		offensiveSkillBook1TT = GameObject.Find("Canvas/Panel/OffensivePowerUps/SkillBook1/ToolTip");
+		offensiveSkillBook1.SetActive (false);
+		offensiveSkillBook2 = GameObject.Find("Canvas/Panel/OffensivePowerUps/SkillBook2");
+		offensiveSkillBook2TT = GameObject.Find("Canvas/Panel/OffensivePowerUps/SkillBook2/ToolTip");
+		offensiveSkillBook2.SetActive (false);
+		defensiveSkillBook1 = GameObject.Find("Canvas/Panel/DefensivePowerUps/SkillBook1");
+		defensiveSkillBook1TT = GameObject.Find("Canvas/Panel/DefensivePowerUps/SkillBook1/ToolTip");
+		defensiveSkillBook1.SetActive (false);
+		defensiveSkillBook2 = GameObject.Find("Canvas/Panel/DefensivePowerUps/SkillBook2");
+		defensiveSkillBook2TT = GameObject.Find("Canvas/Panel/DefensivePowerUps/SkillBook2/ToolTip");
+		defensiveSkillBook2.SetActive (false);
 
         attack = GetComponent<PlayerAttack>();
 
@@ -194,6 +216,8 @@ public class UIScript : MonoBehaviour
                     offMenuPos--;
                 }
             }
+
+			ShowSkillBookToolTips (mainMenu || offMenu); 
         }
 
         if (MainMenuInputTriggered() == true)
@@ -209,6 +233,8 @@ public class UIScript : MonoBehaviour
                 mainMenu = true;
             }
 			overlay.SetActive(true);
+
+			ShowSkillBookToolTips (mainMenu || offMenu); 
         }
         else if (OffMenuInputTriggered() == true)
         {
@@ -222,6 +248,8 @@ public class UIScript : MonoBehaviour
                 offMenu = true;
             }
 			overlay.SetActive(true);
+
+			ShowSkillBookToolTips (mainMenu || offMenu); 
         }
 
 		if (PauseInputTriggered () == true) 
@@ -362,6 +390,60 @@ public class UIScript : MonoBehaviour
         }
 
     }
+
+	private void ShowSkillBookToolTips(bool show = true)
+	{
+		offensiveSkillBook1TT.SetActive (show);
+		offensiveSkillBook2TT.SetActive (show);
+		defensiveSkillBook1TT.SetActive (show);
+		defensiveSkillBook2TT.SetActive (show);
+	}
+
+	public void OnEqipSkillBook () 
+	{
+		offensiveSkillBook1.SetActive (false);
+		offensiveSkillBook2.SetActive (false);
+		defensiveSkillBook1.SetActive (false);
+		defensiveSkillBook2.SetActive (false);
+
+		ShowSkillBookToolTips (true);
+
+		foreach (BonusItem bi in attack.bonusItems)
+		{
+			if (bi.type == SkillBookType.OFFENSIVE) 
+			{
+				if (!offensiveSkillBook1.activeInHierarchy) 
+				{
+					offensiveSkillBook1.SetActive (true);
+					offensiveSkillBook1TT.GetComponentInChildren<Text> ().text = string.Format ("<b>{0}</b>\n{1}", bi.name, bi.toolTipDescription);
+					offensiveSkillBook1TT.SetActive (false);
+				}
+				else if (!offensiveSkillBook2.activeInHierarchy) 
+				{
+					offensiveSkillBook2.SetActive (true);
+					offensiveSkillBook2TT.GetComponentInChildren<Text> ().text = string.Format ("<b>{0}</b>\n{1}", bi.name, bi.toolTipDescription);
+					offensiveSkillBook2TT.SetActive (false);
+				}
+			} 
+			else
+			{
+				if (!defensiveSkillBook1.activeInHierarchy) 
+				{
+					defensiveSkillBook1.SetActive (true);
+					defensiveSkillBook1TT.GetComponentInChildren<Text> ().text = string.Format ("<b>{0}</b>\n{1}", bi.name, bi.toolTipDescription);
+					defensiveSkillBook1TT.SetActive (false);
+				}
+				else if (!defensiveSkillBook2.activeInHierarchy) 
+				{
+					defensiveSkillBook2.SetActive (true);
+					defensiveSkillBook2TT.GetComponentInChildren<Text> ().text = string.Format ("<b>{0}</b>\n{1}", bi.name, bi.toolTipDescription);
+					defensiveSkillBook2TT.SetActive (false);
+				}
+			}
+		}
+
+
+	}
 
 	public void OnDeath()
 	{
