@@ -5,6 +5,9 @@ using System.Collections.Generic;
 public class PlayerAttack : MonoBehaviour {
 
 	private const int MAIN_INSTRUMENT_COUNT = 2;
+    private int counter = 0;
+    private float time = 0f;
+
 	public enum Type {
 		FLUTE = 0,
 		VIOLIN
@@ -30,7 +33,7 @@ public class PlayerAttack : MonoBehaviour {
 		public Mode mode;
 		[Range(0,1)]
 		public float criticalProbability;
-        public AudioClip hitClip;
+        public AudioClip[] hitClip;
 
         [Header("Meele only:")]
 		public CombatRange.RangeCollider meeleCollider;
@@ -239,7 +242,12 @@ public class PlayerAttack : MonoBehaviour {
 	public void DealDamage(GameObject enemy)
 	{
         AudioSource hitSound = GetComponent<AudioSource>();
-        hitSound.PlayOneShot(GetMainInstrument().hitClip);
+        hitSound.PlayOneShot(GetMainInstrument().hitClip[counter]);
+        counter++;
+        if (counter == 5)
+        {
+            counter = 0;
+        }
 
 		if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability + biAggr.knockbackProbability) 
 		{
