@@ -6,9 +6,15 @@ public class MusicScript : MonoBehaviour {
     public AudioSource baseSource;
     public AudioSource mainSource;
     public AudioSource offSource;
+    public AudioSource choirSource;
     public AudioClip baseClip;
+    public AudioClip choirClip;
+
     private AudioClip mainClip;
     private AudioClip offClip;
+
+    //[HideInInspector]
+    public bool fightingBoss = false;
 
     public float startVolume = 1.0f;
     private float currentVolume = 1.0f;
@@ -33,6 +39,7 @@ public class MusicScript : MonoBehaviour {
 
         //these do fuck all before initialization
         baseSource.clip = baseClip;
+        choirSource.clip = choirClip;
         mainClip = ui.mainHand.clip;
         mainSource.clip = mainClip;
         offClip = ui.offHand.clip;
@@ -41,6 +48,7 @@ public class MusicScript : MonoBehaviour {
         baseSource.volume = startVolume;
         mainSource.volume = startVolume;
         offSource.volume = startVolume;
+        choirSource.volume = startVolume;
 
         baseSource.Play(); 
         mainSource.Play();
@@ -49,7 +57,16 @@ public class MusicScript : MonoBehaviour {
 
     //Update is called once per frame
     void Update () {
-        
+
+        if (fightingBoss && !choirSource.isPlaying){
+            choirSource.time = musictime;
+            choirSource.Play();
+        }
+        else if (!fightingBoss && choirSource.isPlaying)
+        {
+            choirSource.Stop();
+        }
+          
         if (fadeIn)
         {
             if (baseSource.volume < startVolume)
