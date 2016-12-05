@@ -391,12 +391,12 @@ public class UIScript : MonoBehaviour
 
     bool CloseMenuInputTriggered()
     {
-        return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_Y);
+        return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_BACK);
     }
 
 	bool PauseInputTriggered()
 	{
-		return Input.GetKeyDown(KeyCode.Escape);
+		return Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_START);
 	}
 }
 ///Author(s): Samuel Ekne, Julia von Heijne
