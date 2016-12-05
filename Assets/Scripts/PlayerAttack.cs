@@ -6,7 +6,6 @@ public class PlayerAttack : MonoBehaviour {
 
 	private const int MAIN_INSTRUMENT_COUNT = 2;
     private int counter = 0;
-    private float time = 0f;
 
 	public enum Type {
 		FLUTE = 0,

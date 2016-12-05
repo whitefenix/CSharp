@@ -8,9 +8,9 @@ public class OverlayFade : MonoBehaviour {
 	public float overlayTransparency = 0.6f;
 
 	private Image overlay;
-
-	private bool fadeIn;
-	private bool fadeOut;
+    
+    [HideInInspector]
+	public bool fadeIn, fadeOut;
 
 	private float tmpA;
 

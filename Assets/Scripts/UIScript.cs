@@ -4,10 +4,8 @@ using UnityEngine.UI;
 
 public class UIScript : MonoBehaviour
 {
-    /* TODO:
-     * Fix proper sprites/images for everything
-     * Discuss healthbar
-     */
+
+    public bool isDead = false;
 
     [System.Serializable]
     public class MainHandInstrument
@@ -353,6 +351,28 @@ public class UIScript : MonoBehaviour
      */
     void OnGUI()
     {
+        if (isDead)
+        {
+            PlayerController control = GameObject.Find("Player").GetComponent<PlayerController>();
+            PlayerAttack attack = GameObject.Find("Player").GetComponent<PlayerAttack>();   
+            control.enabled = false;
+            attack.enabled = false;
+            Time.timeScale = 0.1f;
+            OverlayFade fade = overlay.GetComponent<OverlayFade>();
+            overlay.SetActive(true);
+            fade.overlayTransparency = 1.0f;
+            fade.speed = 3;
+            if (!fade.fadeIn) //when we are done fading in
+            {           
+                gameOverMenu.SetActive (true);
+                Time.timeScale = 0.0f;
+                control.enabled = true;
+                attack.enabled = true;
+            }
+            //trigger fadeout
+            //if fadeout is done
+                //trigger gameoverscreen and pause
+        }
         if (mainMenu) //if mainhand menu is currently open
         {
             mainMenuPanel.SetActive(true);
@@ -388,7 +408,6 @@ public class UIScript : MonoBehaviour
                 }
             }
         }
-
     }
 
 	private void ShowSkillBookToolTips(bool show = true)
@@ -447,8 +466,13 @@ public class UIScript : MonoBehaviour
 
 	public void OnDeath()
 	{
-		gameOverMenu.SetActive (true);
-		Time.timeScale = 0.0f;
+        isDead = true; //trigger fadeout
+        MusicScript music = GetComponent<MusicScript>();
+        music.isDead = true;
+        //fadeout
+        //play right music
+        //to gameoverscreen
+
 	}
 
     bool MainMenuInputTriggered()
