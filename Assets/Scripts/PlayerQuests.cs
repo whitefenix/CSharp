@@ -102,9 +102,15 @@ public class PlayerQuests : MonoBehaviour {
 		{
 			cPrefix = "<color=#B0B0B0FF>";
 			cPostfix = "</color>";
+		} 
+		else 
+		{
+			cPrefix = "<color=#ECBE47FF>";
+			cPostfix = "</color>";
 		}
 
-		text += string.Format("{0}<b>{1}</b>{2}\n", cPrefix, q.title, cPostfix);
+		//text += string.Format("{0}<b>{1}</b>{2}\n", cPrefix, q.title, cPostfix);
+		text += cPrefix + q.title + cPostfix + '\n';
 
 		foreach (QuestCondition qc in q.conditionList) 
 		{
@@ -117,7 +123,7 @@ public class PlayerQuests : MonoBehaviour {
 			{
 				cPrefix = "<color=#B0B0B0FF>";
 				cPostfix = "</color>";
-			}
+			} 
 
 			count = "";
 			if (qc.action == Action.COLLECT_TYPE || qc.action == Action.KILL_TYPE) 
@@ -125,7 +131,8 @@ public class PlayerQuests : MonoBehaviour {
 				count = string.Format("({0}/{1})", qc.currentCount, qc.targetCount);
 			}
 
-			text += string.Format ("{0} - <i>{1}</i>{2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
+			//text += string.Format ("{0} - <i>{1}</i>{2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
+			text += string.Format ("{0} - {1} {2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
 		}
 
 		text += "\n";
@@ -235,6 +242,15 @@ public class PlayerQuests : MonoBehaviour {
 			}
 
 			UpdateQuestDisplay ();
+		}
+	}
+
+	public void NotifyQuestCondition(QuestCondition qc)
+	{
+		if (PlayerQuests.CorrectOrder (qc)) 
+		{
+			qc.conditionMet = true;
+			CheckQuest (qc.parentItem);
 		}
 	}
 

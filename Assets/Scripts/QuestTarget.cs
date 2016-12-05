@@ -37,11 +37,9 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnDeath()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.KILL 
-			&& PlayerQuests.CorrectOrder(condition)) 
+		if (condition != null && condition.action == PlayerQuests.Action.KILL) 
 		{
-			condition.conditionMet = true;
-			playerQuests.CheckQuest (condition.parentItem);
+			playerQuests.NotifyQuestCondition (condition);
 		}
 
 		playerQuests.NotifyTypeQuest (targetType, PlayerQuests.Action.KILL_TYPE);
@@ -49,11 +47,9 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnCollected()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.COLLECT 
-			&& PlayerQuests.CorrectOrder(condition)) 
+		if (condition != null && condition.action == PlayerQuests.Action.COLLECT) 
 		{
-			condition.conditionMet = true;
-			playerQuests.CheckQuest (condition.parentItem);
+			playerQuests.NotifyQuestCondition (condition);
 		}
 
 		playerQuests.NotifyTypeQuest (targetType, PlayerQuests.Action.COLLECT_TYPE);
@@ -61,11 +57,9 @@ public class QuestTarget : MonoBehaviour {
 
 	public void OnTalk()
 	{
-		if (condition != null && condition.action == PlayerQuests.Action.TALK 
-			&& PlayerQuests.CorrectOrder(condition)) 
+		if (condition != null && condition.action == PlayerQuests.Action.TALK) 
 		{
-			condition.conditionMet = true;
-			playerQuests.CheckQuest (condition.parentItem);
+			playerQuests.NotifyQuestCondition (condition);
 		}
 	}
 }
