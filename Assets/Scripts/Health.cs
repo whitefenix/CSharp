@@ -125,7 +125,11 @@ public class Health : MonoBehaviour {
 		dead = true;
 
 		gameObject.SendMessage ("OnDeath", SendMessageOptions.DontRequireReceiver);
-	//	GameObject.Destroy (gameObject);
+        if (gameObject.tag != "Player")
+        {
+            GameObject.Destroy(gameObject);
+        }
+		
 	}
 
 	public void Stun (float stunDuration)
