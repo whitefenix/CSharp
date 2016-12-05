@@ -75,7 +75,8 @@ public class PlayerAttack : MonoBehaviour {
 
 	private Vector3 missileSpawnHeight = Vector3.up;
 
-	public List<BonusItem> bonusItems;
+	private BonusItem biAggr;
+	private List<BonusItem> bonusItems;
 
 	public void SetCurrentPerk(Perk perk)
 	{
@@ -102,6 +103,8 @@ public class PlayerAttack : MonoBehaviour {
 		combatRange = GetComponentsInChildren<CombatRange>()[0];
 		animator = GetComponentsInChildren<Animator>()[0];
 		quests = GetComponent<PlayerQuests> ();
+
+		biAggr = new BonusItem ();
 		bonusItems = new List<BonusItem> ();
 
 		//TODO do somewhere else... init problems
@@ -123,7 +126,7 @@ public class PlayerAttack : MonoBehaviour {
 
 				if (talkingNPC.HasGift ()) 
 				{
-					bonusItems.Add(talkingNPC.reward);
+					EquipBonusItem(talkingNPC.reward);
 				}
 			}
 		} 
@@ -149,9 +152,11 @@ public class PlayerAttack : MonoBehaviour {
 			case Mode.SINGLE_RANGED:
 
 				int pierce = 1;
-				if (offHandPerk.Equals (Perk.PIERCE) && Random.value <= GetMainInstrument ().pierceProbability) {
-					pierce = currentInstrument.pierceTrough;
+				if (offHandPerk.Equals (Perk.PIERCE) && Random.value <= GetMainInstrument ().pierceProbability + biAggr.pierceProbability) 
+				{
+					pierce = currentInstrument.pierceTrough + biAggr.pierceTrough;
 				}
+
 				Vector3 position = transform.position + missileSpawnHeight + transform.forward;
 
 				GameObject missile = (GameObject)Instantiate (
@@ -162,39 +167,13 @@ public class PlayerAttack : MonoBehaviour {
 
 				m.attack = this;
 				m.direction = transform.forward * 0.1f;
-				m.maxRange = currentInstrument.range;
+				m.maxRange = currentInstrument.range + biAggr.range;
 				m.pierce = pierce;
-
-//				if (offHandPerk.Equals (Perk.PIERCE)) 
-//				{
-//					GameObject[] rangedEnemies = combatRange.GetEnemiesInRange (
-//						                             transform.position + new Vector3 (0, 1, 0), 
-//						                             transform.forward, 
-//						                             currentInstrument.range, 
-//						                             currentInstrument.pierceTrough + 1);
-//
-//					foreach (GameObject enemy in rangedEnemies) 
-//					{
-//						DealDamage (enemy);
-//					}
-//				} 
-//				else 
-//				{
-//					GameObject rangedEnemy = combatRange.GetEnemyInRange (
-//						                         transform.position + new Vector3 (0, 1, 0), 
-//						                         transform.forward, 
-//						                         currentInstrument.range);
-//
-//					if (rangedEnemy != null) 
-//					{ 
-//						DealDamage (rangedEnemy);
-//					}
-//				}
 
 				break;
 			}
 			combatRange.RemoveEnemies (ref killedEnemies);
-			attackTimeout = Time.time + (1.0f / currentInstrument.speed);
+			attackTimeout = Time.time + (1.0f / (currentInstrument.speed + biAggr.attackSpeed));
 			//animator.SetBool ("isFighting", true);
 
 			animator.Play("Fighting");
@@ -206,6 +185,37 @@ public class PlayerAttack : MonoBehaviour {
 		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);
 	}
 
+	private void EquipBonusItem(BonusItem bi, bool unequip = false)
+	{
+		int sign = 1;
+		if (unequip) 
+		{
+			bonusItems.Remove (bi);
+			sign = -1;
+		} 
+		else 
+		{
+			bonusItems.Add (bi);
+		}
+
+		biAggr.movementSpeed += bi.movementSpeed * sign;
+		biAggr.maximumHealth += bi.maximumHealth * sign;
+
+		biAggr.attackDamage += bi.attackDamage * sign;
+		biAggr.attackSpeed += bi.attackSpeed * sign;
+		biAggr.criticalProbability += bi.criticalProbability * sign;
+
+		biAggr.range += bi.range * sign;
+
+		biAggr.pierceTrough += bi.pierceTrough * sign;
+		biAggr.pierceProbability += bi.pierceProbability * sign;
+
+		biAggr.knockbackStrength += bi.knockbackStrength * sign;
+		biAggr.knockbackStunProbability += bi.knockbackStunProbability * sign;
+		biAggr.knockbackStun += bi.knockbackStun * sign;
+		biAggr.knockbackStunProbability += bi.knockbackStunProbability * sign;
+	}
+
 	private MainInstrument GetMainInstrument()
 	{
 		return mainHandInstruments [(int)mainHandIdx];
@@ -213,14 +223,14 @@ public class PlayerAttack : MonoBehaviour {
 
 	private void KnockbackEnemy(GameObject enemy)
 	{
-		float stunTime = GetMainInstrument().knockbackStun;
+		float stunTime = GetMainInstrument().knockbackStun + biAggr.knockbackStun;
 		Vector3 dir = (enemy.transform.position - transform.position).normalized;
-		dir *= GetMainInstrument().knockbackStrength;
+		dir *= GetMainInstrument().knockbackStrength + biAggr.knockbackStrength;
 
 
 		enemy.SendMessage ("Knockback", dir);
 
-		if (Random.value <= GetMainInstrument().knockbackStunProbability)
+		if (Random.value <= GetMainInstrument().knockbackStunProbability + biAggr.knockbackStunProbability)
 			enemy.SendMessage ("Stun", stunTime);
 	}
 
@@ -229,13 +239,13 @@ public class PlayerAttack : MonoBehaviour {
         AudioSource hitSound = GetComponent<AudioSource>();
         hitSound.PlayOneShot(GetMainInstrument().hitClip);
 
-        if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability) 
+		if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability + biAggr.knockbackProbability) 
 		{
 			KnockbackEnemy (enemy);
 		}
 
-		bool critical = (Random.value <= GetMainInstrument ().criticalProbability);
-		float damage = GetMainInstrument ().damage;
+		bool critical = (Random.value <= GetMainInstrument ().criticalProbability + biAggr.criticalProbability);
+		float damage = GetMainInstrument ().damage + biAggr.attackDamage;
 
 		if(critical)
 			damage *= criticalDamageMultiplicator;
