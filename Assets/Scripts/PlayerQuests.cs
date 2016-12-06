@@ -10,12 +10,18 @@ public class PlayerQuests : MonoBehaviour {
 		KILL,
 		TALK,
 		COLLECT_TYPE,
-		KILL_TYPE
+		KILL_TYPE,
+		TALK_TYPE
 	}
 
 	[System.Serializable]
 	public class QuestItem
 	{
+		public bool isset = true;
+
+		[HideInInspector]
+		public uint id;
+
 		[Header("General:")]
 		public bool isMainQuest;
 		public bool mandatoryOrder;
@@ -64,10 +70,15 @@ public class PlayerQuests : MonoBehaviour {
 	public Dictionary<uint, List<QuestCondition>> typeQuests;
 	public static Text questListText;
 
+	private static uint QUEST_ID = 0;
+	private List<uint> mainQuestsFinished;
+	public int mainQuestCount;
+
 	// Use this for initialization
 	void Start ()
 	{
 		typeQuests = new Dictionary<uint, List<QuestCondition>> ();
+		mainQuestsFinished = new List<uint> ();
 		questListText = GameObject.Find ("Canvas/Quests/QuestLog/Text").GetComponent<Text>();
 
 		foreach (PlayerQuests.QuestItem q in quests) 
@@ -126,7 +137,7 @@ public class PlayerQuests : MonoBehaviour {
 			} 
 
 			count = "";
-			if (qc.action == Action.COLLECT_TYPE || qc.action == Action.KILL_TYPE) 
+			if (qc.action == Action.COLLECT_TYPE || qc.action == Action.KILL_TYPE || qc.action == Action.TALK_TYPE) 
 			{
 				count = string.Format("({0}/{1})", qc.currentCount, qc.targetCount);
 			}
@@ -142,6 +153,11 @@ public class PlayerQuests : MonoBehaviour {
 
 	private void PrepareQuest(QuestItem q)
 	{
+		if (q.isMainQuest) 
+		{
+			q.id = QUEST_ID++;
+		}	
+
 		QuestTarget tmp;
 		int idx = 0;
 
@@ -211,6 +227,17 @@ public class PlayerQuests : MonoBehaviour {
 
 		q.questFinished = questFinished;
 
+		if (q.isMainQuest && q.questFinished && !mainQuestsFinished.Contains(q.id)) 
+		{
+			mainQuestsFinished.Add (q.id);
+			mainQuestCount--;
+
+			if (mainQuestCount == 0) 
+			{
+				gameObject.SendMessage ("OnLevelComplete", SendMessageOptions.DontRequireReceiver);
+			}
+		}
+
 		UpdateQuestDisplay ();
 	}
 
@@ -272,7 +299,10 @@ public class PlayerQuests : MonoBehaviour {
 
 		foreach (PlayerQuests.QuestItem q in quests) 
 		{
-			questListText.text += GetQuestRichtext (q);
+			if (!q.questFinished) 
+			{
+				questListText.text += GetQuestRichtext (q);
+			}
 		}
 	}
 }

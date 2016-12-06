@@ -42,13 +42,13 @@ public class NPCTalk : MonoBehaviour {
 
 	public bool HasGift()
 	{
-		if (quest != null) 
+		if (HasQuest()) 
 		{
-			return quest.questFinished == true && reward != null;
+			return quest.questFinished == true && reward != null && reward.isset == true;
 		} 
 		else 
 		{
-			return reward != null;
+			return reward != null && reward.isset == true;
 		}
 	}
 
@@ -59,7 +59,7 @@ public class NPCTalk : MonoBehaviour {
 
 	public bool HasQuest()
 	{
-		return quest != null;
+		return quest != null && quest.isset == true;
 	}
 
 	public PlayerQuests.QuestItem RequestQuest()

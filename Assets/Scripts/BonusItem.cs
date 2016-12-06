@@ -10,6 +10,8 @@ public enum SkillBookType
 [System.Serializable]
 public class BonusItem 
 {
+	public bool isset = true;
+
 	public SkillBookType type;
 	public string name;
 	[TextArea(3,10)]

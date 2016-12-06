@@ -475,6 +475,12 @@ public class UIScript : MonoBehaviour
 
 	}
 
+	public void OnLevelComplete()
+	{
+		//TODO show outro movie
+		Debug.Log("Main Quests finished");
+	}
+
     bool MainMenuInputTriggered()
     {
         return Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(GlobalConstants.XBOX_BTN_X);

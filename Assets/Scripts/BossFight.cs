@@ -7,11 +7,14 @@ public class BossFight : MonoBehaviour {
     public GameObject littleBoss;
     private bool hasSplit = false;
 
+	public GameObject particleSystem;
+
     public float waitTimeBeforeSplit = 1.0f;
 
 	// Use this for initialization
-	void Start () {
-	 health = GetComponent<Health>();
+	void Start () 
+	{
+	 	health = GetComponent<Health>();
 	}
 	
 	// Update is called once per frame
@@ -19,7 +22,8 @@ public class BossFight : MonoBehaviour {
 
         if (health.currentHealth < health.maximumHealth / 2)
         {
-          
+			particleSystem.SetActive (true);
+
             if (!hasSplit)
             {
                 StartCoroutine(split());               
@@ -33,11 +37,11 @@ public class BossFight : MonoBehaviour {
 
     IEnumerator split()
     {
-        Debug.Log("Start");
+        //Debug.Log("Start");
         health.currentHealth = health.maximumHealth; //just so he doesnt die while transforming
         //TODO: Stop + particle effect
         yield return new WaitForSeconds(waitTimeBeforeSplit); //wait for 1 second before spawning
-        Debug.Log("Go");
+        //Debug.Log("Go");
         Vector3 position = transform.position;
         GameObject littleBoss1 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
         position.x -= 2;
@@ -51,6 +55,7 @@ public class BossFight : MonoBehaviour {
         position.z += 2;
         GameObject littleBoss6 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
         hasSplit = true;
-        GameObject.Destroy(gameObject);
+
+		health.Die ();
     }
 }

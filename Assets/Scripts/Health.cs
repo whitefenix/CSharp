@@ -120,7 +120,7 @@ public class Health : MonoBehaviour {
 		}
 	}
 
-	private void Die()
+	public void Die()
 	{
 		dead = true;
 

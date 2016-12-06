@@ -12,7 +12,10 @@ public class QuestTarget : MonoBehaviour {
 		ENEMY_GOLEM,
 		ITEM_HP_POTION,
 		ITEM_SKILLBOOK,
-		NPC_PEASANT
+		NPC_PEASANT,
+		SPECIAL_CAMPFIRE,
+		ENEMY_BOSS,
+		ENEMY_BOSS_SMALL
 	}
 
 	public Type targetType;
@@ -62,5 +65,7 @@ public class QuestTarget : MonoBehaviour {
 		{
 			playerQuests.NotifyQuestCondition (condition);
 		}
+
+		playerQuests.NotifyTypeQuest (targetType, PlayerQuests.Action.TALK_TYPE);
 	}
 }
