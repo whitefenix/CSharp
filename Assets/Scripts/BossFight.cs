@@ -7,7 +7,7 @@ public class BossFight : MonoBehaviour {
     public GameObject littleBoss;
     private bool hasSplit = false;
 
-	public GameObject particleSystem;
+	public GameObject splitParticleSystem;
 
     public float waitTimeBeforeSplit = 1.0f;
 
@@ -22,7 +22,7 @@ public class BossFight : MonoBehaviour {
 
         if (health.currentHealth < health.maximumHealth / 2)
         {
-			particleSystem.SetActive (true);
+			splitParticleSystem.SetActive (true);
 
             if (!hasSplit)
             {
@@ -43,17 +43,17 @@ public class BossFight : MonoBehaviour {
         yield return new WaitForSeconds(waitTimeBeforeSplit); //wait for 1 second before spawning
         //Debug.Log("Go");
         Vector3 position = transform.position;
-        GameObject littleBoss1 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         position.x -= 2;
-        GameObject littleBoss2 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         position.z -= 2;
-        GameObject littleBoss3 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         position.x += 2;
-        GameObject littleBoss4 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         position.x += 2;
-        GameObject littleBoss5 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         position.z += 2;
-        GameObject littleBoss6 = (GameObject)Instantiate(littleBoss, position, Quaternion.identity);
+        Instantiate(littleBoss, position, Quaternion.identity);
         hasSplit = true;
 
 		health.Die ();

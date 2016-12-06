@@ -35,7 +35,7 @@ public class QuestTarget : MonoBehaviour {
 
 		if (questTargetIndicator != null) 
 		{
-			GameObject indicator = Instantiate (questTargetIndicator, transform, false) as GameObject;
+			Instantiate (questTargetIndicator, transform, false);
 		}
 	}
 

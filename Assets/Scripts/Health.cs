@@ -6,7 +6,8 @@ public class Health : MonoBehaviour {
 
 	public float maximumHealth = 100;
 	public float initialHealth = 100;
-	[HideInInspector] public float currentHealth;
+	[HideInInspector] 
+	public float currentHealth;
 
 	private float lastHitTime;
 	private float lastStunTime;
@@ -25,6 +26,8 @@ public class Health : MonoBehaviour {
 	public GameObject lableOrigin;
 
 	private ParticleSystem stunParticles;
+
+	private PlayerSkills ps;
 
 	public float health 
 	{
@@ -48,6 +51,11 @@ public class Health : MonoBehaviour {
 		else 
 		{
 			lableOrigin = gameObject;
+		}
+
+		if (gameObject.tag == "Player") 
+		{
+			ps = GetComponent<PlayerSkills> ();
 		}
 
 		currentHealth = Mathf.Min(initialHealth, maximumHealth);
@@ -86,7 +94,15 @@ public class Health : MonoBehaviour {
 	{
 		if (!isDead) 
 		{
-			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
+			if (gameObject.tag == "Player") 
+			{
+				currentHealth = Mathf.Min (currentHealth + value + ps.biAggr.maximumHealth, maximumHealth + ps.biAggr.maximumHealth);
+			} 
+			else 
+			{
+				currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
+			}
+
 
 			if (valueLabel != null && showHealLabel)
 				SpawnLabel (value, healColor);

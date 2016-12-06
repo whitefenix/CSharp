@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 
 	private Camera mainCamera;
 	private Animator animator;
+	private PlayerSkills ps;
 
 	private int layerMask;
 
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 		animator = this.GetComponentsInChildren<Animator>()[0];
+		ps = GetComponent<PlayerSkills> ();
 
 		//Use Terrain only, for mouse cursor raycast
 		layerMask = (1 << 8);
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour {
 		if (controller.isGrounded) 
 		{
 			aimDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-			moveDir = aimDir * speed;
+			moveDir = aimDir * (speed + ps.biAggr.movementSpeed);
 		}
 		moveDir.y -= gravity * Time.deltaTime;
 

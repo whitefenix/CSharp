@@ -33,8 +33,8 @@ public class SkillBook : MonoBehaviour {
 	{
 		if (EnemyAttack.IsPlayerCollider (other)) 
 		{
-			PlayerAttack otherPlayerAttack = other.gameObject.GetComponent<PlayerAttack> ();
-			otherPlayerAttack.EquipBonusItem (bonus);
+			PlayerSkills otherPlayerSkills = other.gameObject.GetComponent<PlayerSkills> ();
+			otherPlayerSkills.EquipBonusItem (bonus);
 
 			gameObject.SendMessage ("OnCollected", SendMessageOptions.DontRequireReceiver);
 			Destroy (gameObject);

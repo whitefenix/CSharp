@@ -109,14 +109,14 @@ public class PlayerQuests : MonoBehaviour {
 	string GetQuestRichtext(QuestItem q)
 	{
 		string text = "", cPrefix = "", cPostfix = "", count = "";
-		if (q.questFinished) 
+		if (q.isMainQuest) 
 		{
-			cPrefix = "<color=#B0B0B0FF>";
+			cPrefix = "<color=#ECBE47FF>";
 			cPostfix = "</color>";
 		} 
 		else 
 		{
-			cPrefix = "<color=#ECBE47FF>";
+			cPrefix = "<color=#EC479AFF>";
 			cPostfix = "</color>";
 		}
 
@@ -145,8 +145,6 @@ public class PlayerQuests : MonoBehaviour {
 			//text += string.Format ("{0} - <i>{1}</i>{2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
 			text += string.Format ("{0} - {1} {2} {3}\n", cPrefix, qc.shortDescription, count, cPostfix);
 		}
-
-		text += "\n";
 
 		return text;
 	}
