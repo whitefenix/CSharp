@@ -16,7 +16,7 @@ public class MainMenu : MonoBehaviour {
 	{
 		menuButtons.SetActive (false);
 
-		SceneManager.LoadScene ("Demo");
+		SceneManager.LoadScene ("Act1_Final_Level");
 	}
 
 	public void LoadQuestScene ()
