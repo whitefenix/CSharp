@@ -391,7 +391,7 @@ public class UIScript : MonoBehaviour
                 if (!continueMenu.activeInHierarchy)
                 {
                     continueMenu.SetActive(true);
-                    //GameObject.Find("Canvas/GameOver/MenuButtons/Restart").GetComponent<Button>().Select();
+					GameObject.Find("Canvas/ContinueMenu/MenuButtons/Restart").GetComponent<Button>().Select();
                     Time.timeScale = 0.0f;
                     control.enabled = true;
                     attacking.enabled = true;

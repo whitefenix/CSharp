@@ -17,12 +17,20 @@ public class VideoScript : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump"))
+		if (SkipInputTriggered())
         {
             test.Stop();
             source.Stop();
-            SceneManager.LoadScene("Act1_Final_Level");
         }
+
+		if (!test.isPlaying) 
+		{
+			SceneManager.LoadScene("Act1_Final_Level");
+		}
     }
 
+	private bool SkipInputTriggered() 
+	{
+		return Input.GetKeyDown (KeyCode.Space) || Input.GetKeyDown (GlobalConstants.XBOX_BTN_A);
+	}
 }

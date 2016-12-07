@@ -8,8 +8,12 @@ public class MainMenu : MonoBehaviour {
 	public GameObject aboutPanel;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+	{
+		if (aboutPanel) 
+		{
+			aboutPanel.SetActive (false);
+		}
 	}
 
 	public void LoadDemoScene () 
