@@ -152,7 +152,7 @@ public class UIScript : MonoBehaviour
 //                overlayImage.color = tempColor;
 //            }
         }
-        else
+		else if (!pauseMenu.activeInHierarchy)
         {
             Time.timeScale = 1.0f;
 //            if (tempColor.a > 0.01f)
