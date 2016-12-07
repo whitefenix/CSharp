@@ -316,8 +316,12 @@ public class UIScript : MonoBehaviour
 			closeOffMenu();
 		}
 
-		Time.timeScale = 0.0f;
-		pauseMenu.SetActive (true);
+		if (!pauseMenu.activeInHierarchy) 
+		{
+			Time.timeScale = 0.0f;
+			pauseMenu.SetActive (true);
+			GameObject.Find ("Canvas/PauseMenu/MenuButtons/Resume").GetComponent<Button> ().Select ();
+		}
 	}
 
 	public void closePauseMenu()
@@ -365,11 +369,17 @@ public class UIScript : MonoBehaviour
             fade.overlayTransparency = 1.0f;
             fade.speed = 3;
             if (!fade.fadeIn) //when we are done fading in
-            {           
-                gameOverMenu.SetActive (true);
-                Time.timeScale = 0.0f;
-                control.enabled = true;
-                attack.enabled = true;
+            {       
+				//do it once!
+				if (!gameOverMenu.activeInHierarchy) 
+				{
+					gameOverMenu.SetActive (true);
+					GameObject.Find ("Canvas/GameOver/MenuButtons/Restart").GetComponent<Button> ().Select ();
+
+					Time.timeScale = 0.0f;
+					control.enabled = true;
+					attack.enabled = true;
+				}
             }
             //trigger fadeout
             //if fadeout is done
