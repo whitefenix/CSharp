@@ -14,10 +14,16 @@ public class MainMenu : MonoBehaviour {
 
 	public void LoadDemoScene () 
 	{
+        
 		menuButtons.SetActive (false);
-
-		SceneManager.LoadScene ("Act1_Final_Level");
+        SceneManager.LoadScene ("Act1_Final_Level");
 	}
+
+    public void LoadVideoScene()
+    {
+        menuButtons.SetActive(false);
+        SceneManager.LoadScene("Video");
+    }
 
 	public void LoadQuestScene ()
 	{

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class VideoScript : MonoBehaviour {
@@ -10,24 +11,17 @@ public class VideoScript : MonoBehaviour {
     {      
         source = GetComponent<AudioSource>();
         source.clip = test.audioClip;
+        test.Play();
+        source.Play();
     }
 
     void Update()
     {
         if (Input.GetButtonDown("Jump"))
         {
-
-
-            if (test.isPlaying)
-            {
-                source.Pause();
-                test.Pause();
-            }
-            else
-            {
-                test.Play();
-                source.Play();
-            }
+            test.Stop();
+            source.Stop();
+            SceneManager.LoadScene("Act1_Final_Level");
         }
     }
 
