@@ -65,6 +65,7 @@ public class PlayerAttack : MonoBehaviour {
 	private double attackTimeout;
 
 	private Animator animator;
+	private AudioSource hitSound;
 	private CombatRange combatRange;
 	private List<GameObject> killedEnemies;
 
@@ -104,6 +105,7 @@ public class PlayerAttack : MonoBehaviour {
 		combatRange = GetComponentsInChildren<CombatRange>()[0];
 		animator = GetComponentsInChildren<Animator>()[0];
 		quests = GetComponent<PlayerQuests> ();
+		hitSound = GetComponent<AudioSource>();
 
 		ps = GetComponent<PlayerSkills> ();
 
@@ -132,6 +134,9 @@ public class PlayerAttack : MonoBehaviour {
 		} 
 		else if (Time.time >= attackTimeout && AttackInputTriggered ()) 
 		{
+	        hitSound.PlayOneShot(GetMainInstrument().hitClip[counter++]);
+			counter %= 5;
+
 			MainInstrument currentInstrument = GetMainInstrument ();
 			switch (currentInstrument.mode) {
 			case Mode.SINGLE_MEELE:
@@ -174,12 +179,8 @@ public class PlayerAttack : MonoBehaviour {
 			}
 			combatRange.RemoveEnemies (ref killedEnemies);
 			attackTimeout = Time.time + (1.0f / (currentInstrument.speed + ps.biAggr.attackSpeed));
-			//animator.SetBool ("isFighting", true);
 
 			animator.Play("Fighting");
-		} else {
-			//animator.SetBool ("isFighting", false);
-
 		}
 
 		Debug.DrawRay (transform.position + new Vector3(0,1,0), transform.forward * mainHandInstruments[(int)mainHandIdx].range);
@@ -205,13 +206,13 @@ public class PlayerAttack : MonoBehaviour {
 
 	public void DealDamage(GameObject enemy)
 	{
-        AudioSource hitSound = GetComponent<AudioSource>();
-        hitSound.PlayOneShot(GetMainInstrument().hitClip[counter]);
-        counter++;
-        if (counter == 5)
-        {
-            counter = 0;
-        }
+//        AudioSource hitSound = GetComponent<AudioSource>();
+//        hitSound.PlayOneShot(GetMainInstrument().hitClip[counter]);
+//        counter++;
+//        if (counter == 5)
+//        {
+//            counter = 0;
+//        }
 
 		if (offHandPerk.Equals (Perk.KNOCKBACK) && Random.value <= GetMainInstrument().knockbackProbability + ps.biAggr.knockbackProbability) 
 		{
