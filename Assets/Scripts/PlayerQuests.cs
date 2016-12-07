@@ -74,6 +74,9 @@ public class PlayerQuests : MonoBehaviour {
 	private List<uint> mainQuestsFinished;
 	public int mainQuestCount;
 
+    public AudioClip clip;
+    private bool playedClip;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -223,7 +226,14 @@ public class PlayerQuests : MonoBehaviour {
 			}
 		}
 
-		q.questFinished = questFinished;
+        //TODO: Does this go here?
+        if (questFinished && q.questFinished != questFinished) //if we just finished it, play sound once
+        {
+            AudioSource source = GetComponent<AudioSource>();
+            source.PlayOneShot(clip);
+        }
+
+		q.questFinished = questFinished;    
 
 		if (q.isMainQuest && q.questFinished && !mainQuestsFinished.Contains(q.id)) 
 		{
