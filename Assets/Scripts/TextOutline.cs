@@ -27,9 +27,9 @@ public class TextOutline : MonoBehaviour {
 			otherMeshRenderer.material = new Material(meshRenderer.material);
 			//otherMeshRenderer.castShadows = false;
 			otherMeshRenderer.receiveShadows = false;
-			//otherMeshRenderer.sortingOrder = 100;
-			otherMeshRenderer.sortingLayerID = meshRenderer.sortingLayerID;
+			//otherMeshRenderer.sortingLayerID = meshRenderer.sortingLayerID;
 			otherMeshRenderer.sortingLayerName = meshRenderer.sortingLayerName;
+			otherMeshRenderer.sortingOrder = 10;
 		}
 	}
 
@@ -61,9 +61,9 @@ public class TextOutline : MonoBehaviour {
 			other.transform.position = worldPoint;
 
 			MeshRenderer otherMeshRenderer = transform.GetChild(i).GetComponent<MeshRenderer>();
-			//otherMeshRenderer.sortingOrder = 100;
 			otherMeshRenderer.sortingLayerID = meshRenderer.sortingLayerID;
 			otherMeshRenderer.sortingLayerName = meshRenderer.sortingLayerName;
+			otherMeshRenderer.sortingOrder = 10;
 		}
 	}
 
