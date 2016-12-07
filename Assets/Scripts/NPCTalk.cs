@@ -24,6 +24,8 @@ public class NPCTalk : MonoBehaviour {
 	private bool questGiven = false;
 	private string[] currentConversation;
 
+	public bool mute = false;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -70,6 +72,11 @@ public class NPCTalk : MonoBehaviour {
 
 	public bool Talk()
 	{
+		if (mute) 
+		{
+			return false;
+		}
+
 		gameObject.SendMessage ("OnTalk", SendMessageOptions.DontRequireReceiver);
 
 		if (HasOpenQuest ()) 
