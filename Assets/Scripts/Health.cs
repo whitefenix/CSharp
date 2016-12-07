@@ -39,6 +39,8 @@ public class Health : MonoBehaviour {
 		get { return dead; }
 	}
 
+    public AudioClip clip;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -94,6 +96,8 @@ public class Health : MonoBehaviour {
 	{
 		if (!isDead) 
 		{
+            AudioSource source = GetComponent<AudioSource>();
+            source.PlayOneShot(clip);
 			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
 
 
