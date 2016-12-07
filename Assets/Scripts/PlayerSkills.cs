@@ -6,6 +6,7 @@ public class PlayerSkills : MonoBehaviour {
 
 	public BonusItem biAggr;
 	public List<BonusItem> bonusItems;
+    public AudioClip clip;
 
 	// Use this for initialization
 	void Start () 
@@ -16,6 +17,9 @@ public class PlayerSkills : MonoBehaviour {
 
 	public void EquipBonusItem(BonusItem bi)
 	{
+        AudioSource source = GetComponent<AudioSource>();
+        source.PlayOneShot(clip);
+
 		bonusItems.Add (bi);
 
 		biAggr.movementSpeed += bi.movementSpeed;
