@@ -14,36 +14,27 @@ public class PlayerSkills : MonoBehaviour {
 		bonusItems = new List<BonusItem> ();
 	}
 
-	public void EquipBonusItem(BonusItem bi, bool unequip = false)
+	public void EquipBonusItem(BonusItem bi)
 	{
-		int sign = 1;
-		if (unequip) 
-		{
-			bonusItems.Remove (bi);
-			sign = -1;
-		} 
-		else 
-		{
-			bonusItems.Add (bi);
+		bonusItems.Add (bi);
 
-			gameObject.SendMessage ("OnEqipSkillBook", SendMessageOptions.DontRequireReceiver);
-		}
+		biAggr.movementSpeed += bi.movementSpeed;
+		biAggr.maximumHealth += bi.maximumHealth;
 
-		biAggr.movementSpeed += bi.movementSpeed * sign;
-		biAggr.maximumHealth += bi.maximumHealth * sign;
+		biAggr.attackDamage += bi.attackDamage;
+		biAggr.attackSpeed += bi.attackSpeed;
+		biAggr.criticalProbability += bi.criticalProbability;
 
-		biAggr.attackDamage += bi.attackDamage * sign;
-		biAggr.attackSpeed += bi.attackSpeed * sign;
-		biAggr.criticalProbability += bi.criticalProbability * sign;
+		biAggr.range += bi.range;
 
-		biAggr.range += bi.range * sign;
+		biAggr.pierceTrough += bi.pierceTrough;
+		biAggr.pierceProbability += bi.pierceProbability;
 
-		biAggr.pierceTrough += bi.pierceTrough * sign;
-		biAggr.pierceProbability += bi.pierceProbability * sign;
+		biAggr.knockbackStrength += bi.knockbackStrength;
+		biAggr.knockbackStunProbability += bi.knockbackStunProbability;
+		biAggr.knockbackStun += bi.knockbackStun;
+		biAggr.knockbackStunProbability += bi.knockbackStunProbability;
 
-		biAggr.knockbackStrength += bi.knockbackStrength * sign;
-		biAggr.knockbackStunProbability += bi.knockbackStunProbability * sign;
-		biAggr.knockbackStun += bi.knockbackStun * sign;
-		biAggr.knockbackStunProbability += bi.knockbackStunProbability * sign;
+		gameObject.SendMessage ("OnEqipSkillBook", SendMessageOptions.DontRequireReceiver);
 	}
 }

@@ -94,14 +94,7 @@ public class Health : MonoBehaviour {
 	{
 		if (!isDead) 
 		{
-			if (gameObject.tag == "Player") 
-			{
-				currentHealth = Mathf.Min (currentHealth + value + ps.biAggr.maximumHealth, maximumHealth + ps.biAggr.maximumHealth);
-			} 
-			else 
-			{
-				currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
-			}
+			currentHealth = Mathf.Min (currentHealth + value, maximumHealth);
 
 
 			if (valueLabel != null && showHealLabel)
@@ -146,6 +139,15 @@ public class Health : MonoBehaviour {
             GameObject.Destroy(gameObject);
         }
 		
+	}
+
+	public void OnEqipSkillBook()
+	{
+		Debug.Log ("upgrade healt by " + ps.biAggr.maximumHealth);
+
+		//biAggr is already accumulated, we don't want to double accumulate it on maximumHealth
+		maximumHealth = initialHealth + ps.biAggr.maximumHealth;
+		currentHealth += ps.biAggr.maximumHealth;
 	}
 
 	public void Stun (float stunDuration)
