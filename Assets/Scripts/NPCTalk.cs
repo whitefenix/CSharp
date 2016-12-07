@@ -70,6 +70,13 @@ public class NPCTalk : MonoBehaviour {
 		return quest;
 	}
 
+	public BonusItem RequestReward()
+	{
+		BonusItem tmp = reward;
+		reward = null;
+		return tmp;
+	}
+
 	public bool Talk()
 	{
 		if (mute) 

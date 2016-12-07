@@ -128,7 +128,7 @@ public class PlayerAttack : MonoBehaviour {
 
 				if (talkingNPC.HasGift ()) 
 				{
-					ps.EquipBonusItem(talkingNPC.reward);
+					ps.EquipBonusItem(talkingNPC.RequestReward());
 				}
 			}
 		} 
