@@ -235,7 +235,7 @@ public class PlayerAttack : MonoBehaviour {
 		else
 		{
 			//Move to the origin of attack (if not already following player)
-			enemy.SendMessage ("SetMoveOrder", transform.position);
+			enemy.SendMessage ("InvestigateAttackSource", transform.position);
 		}
 	}
 

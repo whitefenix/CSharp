@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyMovement : MonoBehaviour 
 {
 	private float targetDistance;
 
 	public float enemyLookDistance;
+
+	public float alertRadius = 5;
 
 	private Transform player;
 	private NavMeshAgent nav;
@@ -18,7 +21,7 @@ public class EnemyMovement : MonoBehaviour
 	private double moveTimeout;
 
 	private bool moveOrder;
-	private Vector3 destinationOrder;
+	public Vector3 destinationOrder;
 
 	// Use this for initialization
 	void Start () 
@@ -35,10 +38,8 @@ public class EnemyMovement : MonoBehaviour
 	{
 		if (Time.time >= moveTimeout && player != null) 
 		{
-			targetDistance = Vector3.Distance (player.position, transform.position);
-
 			//Main priority is to follow the player
-			if (targetDistance < enemyLookDistance) 
+			if (IsPlayerInRange()) 
 			{
 				nav.SetDestination (player.position);
 
@@ -66,6 +67,36 @@ public class EnemyMovement : MonoBehaviour
 				sprite.flipX = true;
 			else
 				sprite.flipX = false;
+		}
+	}
+
+	private bool IsPlayerInRange()
+	{
+		return Vector3.Distance (player.position, transform.position) < enemyLookDistance;
+	}
+
+	public void InvestigateAttackSource(Vector3 attackSource)
+	{
+		AlertNearbyEnemies(attackSource);
+		SetMoveOrder(attackSource);
+	}
+
+	public void AlertNearbyEnemies(Vector3 attackSource)
+	{
+		Collider[] hitColliders = Physics.OverlapSphere (transform.position, alertRadius);
+		EnemyMovement tmp;
+
+		foreach (Collider c in hitColliders) 
+		{
+			if (CombatRange.IsEnemyCollider (c)) 
+			{
+				tmp = c.GetComponent<EnemyMovement> ();
+
+				if (tmp) 
+				{
+					tmp.SetMoveOrder (attackSource);
+				}
+			}
 		}
 	}
 
