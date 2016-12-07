@@ -177,6 +177,11 @@ public class PlayerQuests : MonoBehaviour {
 				} 
 				else 
 				{
+					if (q.mandatoryOrder && q.conditionIdx <= qc.idx) 
+					{
+						q.conditionIdx = qc.idx + 1;
+					}
+
 					qc.conditionMet = true;
 				}
 			} 
@@ -193,6 +198,11 @@ public class PlayerQuests : MonoBehaviour {
 			}
 			else 
 			{
+				if (q.mandatoryOrder && q.conditionIdx <= qc.idx) 
+				{
+					q.conditionIdx = qc.idx + 1;
+				}
+
 				qc.conditionMet = true;
 			}
 		}
