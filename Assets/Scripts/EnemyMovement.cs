@@ -14,6 +14,7 @@ public class EnemyMovement : MonoBehaviour
 	private NavMeshAgent nav;
 
 	private SpriteRenderer sprite;
+	public GameObject alertSprite;
 
 	public bool returnToInitialPosition;
 	private Vector3 initialPosition;
@@ -45,14 +46,23 @@ public class EnemyMovement : MonoBehaviour
 
 				//reset move order
 				moveOrder = false;
+
+				alertSprite.SetActive (false);
 			}
 			else if (moveOrder) //if no player is in sight, follow order destination
 			{
 				nav.SetDestination (destinationOrder);
 
 				//if enemy is close to destination stop move order
-				if (Vector3.Distance (transform.position, destinationOrder) < 0.1f)
+				if (Vector3.Distance (transform.position, destinationOrder) < 1.5f) 
+				{
 					moveOrder = false;
+					alertSprite.SetActive (false);
+				} 
+				else 
+				{
+					alertSprite.SetActive (true);
+				}
 			}
 			else //if no player is in sight and no order given, stand still or go back to initial position
 			{
@@ -60,6 +70,8 @@ public class EnemyMovement : MonoBehaviour
 					nav.SetDestination (initialPosition);
 				else
 					nav.SetDestination (transform.position);
+
+				alertSprite.SetActive (false);
 			}
 
 			//Obsolete with animated sprite
