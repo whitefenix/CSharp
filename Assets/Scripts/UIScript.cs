@@ -55,7 +55,13 @@ public class UIScript : MonoBehaviour
 
 	private GameObject overlay;
 	private GameObject pauseMenu;
+    private GameObject continueMenu;
 	private GameObject gameOverMenu;
+
+    PlayerController control;
+    PlayerAttack attacking;
+
+    PlayerQuests quests;
 
     //main = main hand, the left hand side instrument. off = offhand, the right hand side instrument
     public MainHandInstrument[] mainhandInstruments;
@@ -93,6 +99,12 @@ public class UIScript : MonoBehaviour
 		pauseMenu = GameObject.Find ("Canvas/PauseMenu");
 		pauseMenu.SetActive (false);
 
+        continueMenu = GameObject.Find("Canvas/ContinueMenu");
+        continueMenu.SetActive(false);
+
+        control = GetComponent<PlayerController>();
+        attack = GetComponent<PlayerAttack>();
+
 		gameOverMenu = GameObject.Find ("Canvas/GameOver");
 		gameOverMenu.SetActive (false);
 
@@ -109,7 +121,7 @@ public class UIScript : MonoBehaviour
 		defensiveSkillBook2TT = GameObject.Find("Canvas/Panel/DefensivePowerUps/SkillBook2/ToolTip");
 		defensiveSkillBook2.SetActive (false);
 
-        attack = GetComponent<PlayerAttack>();
+        attacking = GetComponent<PlayerAttack>();
 		skills = GetComponent<PlayerSkills>();
 
         //attack.SetCurrentInstrument(mainHand.type);
@@ -118,6 +130,8 @@ public class UIScript : MonoBehaviour
         mainMenuPanel.SetActive(false);
         offMenuPanel.SetActive(false);
         //healthBar.SetActive(true);
+
+        quests = GetComponent<PlayerQuests>();
 
         //ok?
         //set healthslots to be active?
@@ -357,12 +371,32 @@ public class UIScript : MonoBehaviour
      */
     void OnGUI()
     {
+        if (quests.mainQuestCount == 0)
+        {
+            control.enabled = false;
+            attacking.enabled = false;
+            Time.timeScale = 0.1f;
+            OverlayFade fade = overlay.GetComponent<OverlayFade>();
+            overlay.SetActive(true);
+            fade.overlayTransparency = 1.0f;
+            fade.speed = 3;
+            if (!fade.fadeIn) //when we are done fading in
+            {
+                if (!continueMenu.activeInHierarchy)
+                {
+                    continueMenu.SetActive(true);
+                    //GameObject.Find("Canvas/GameOver/MenuButtons/Restart").GetComponent<Button>().Select();
+                    Time.timeScale = 0.0f;
+                    control.enabled = true;
+                    attacking.enabled = true;
+                }
+            }
+        }
+
         if (isDead)
         {
-            PlayerController control = GameObject.Find("Player").GetComponent<PlayerController>();
-            PlayerAttack attack = GameObject.Find("Player").GetComponent<PlayerAttack>();   
             control.enabled = false;
-            attack.enabled = false;
+            attacking.enabled = false;
             Time.timeScale = 0.1f;
             OverlayFade fade = overlay.GetComponent<OverlayFade>();
             overlay.SetActive(true);
@@ -378,7 +412,7 @@ public class UIScript : MonoBehaviour
 
 					Time.timeScale = 0.0f;
 					control.enabled = true;
-					attack.enabled = true;
+					attacking.enabled = true;
 				}
             }
             //trigger fadeout

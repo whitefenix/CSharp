@@ -243,6 +243,7 @@ public class PlayerQuests : MonoBehaviour {
 			if (mainQuestCount == 0) 
 			{
 				gameObject.SendMessage ("OnLevelComplete", SendMessageOptions.DontRequireReceiver);
+                
 			}
 		}
 
