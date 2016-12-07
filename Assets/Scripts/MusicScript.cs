@@ -51,7 +51,7 @@ public class MusicScript : MonoBehaviour {
         baseSource.volume = startVolume;
         mainSource.volume = startVolume;
         offSource.volume = startVolume;
-        choirSource.volume = startVolume;
+        choirSource.volume = startVolume/2;
 
         baseSource.Play(); 
         mainSource.Play();
@@ -74,6 +74,13 @@ public class MusicScript : MonoBehaviour {
         }
         else
         {
+            if (fightingBoss)
+            {
+                if (GameObject.Find("Boss") == null && GameObject.Find("LittleBoss(Clone)") == null)
+                {
+                    fightingBoss = false;
+                }
+            }
             if (fightingBoss && !choirSource.isPlaying)
             {
                 choirSource.time = musictime;

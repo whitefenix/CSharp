@@ -35,6 +35,16 @@ public class BossFight : MonoBehaviour {
 	
 	}
 
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.name);
+        if (other.gameObject.name == "Player")
+        {
+            MusicScript music = GameObject.Find("Player").GetComponent<MusicScript>();
+            music.fightingBoss = true;
+        }
+    }
+
     IEnumerator split()
     {
         //Debug.Log("Start");
