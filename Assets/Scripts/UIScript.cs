@@ -6,6 +6,7 @@ public class UIScript : MonoBehaviour
 {
 
     public bool isDead = false;
+    public bool isDone = false;
 
     [System.Serializable]
     public class MainHandInstrument
@@ -371,8 +372,13 @@ public class UIScript : MonoBehaviour
      */
     void OnGUI()
     {
-        if (quests.mainQuestCount == 0)
+        if (quests.mainQuestCount == 0 && !isDone)
         {
+            isDone = true;
+        }
+
+        if(isDone){
+            onDone();
             control.enabled = false;
             attacking.enabled = false;
             Time.timeScale = 0.1f;
@@ -515,11 +521,13 @@ public class UIScript : MonoBehaviour
         isDead = true; //trigger fadeout
         MusicScript music = GetComponent<MusicScript>();
         music.isDead = true;
-        //fadeout
-        //play right music
-        //to gameoverscreen
-
 	}
+
+    public void onDone()
+    {
+        MusicScript music = GetComponent<MusicScript>();
+        music.isDone = true;
+    }
 
 	public void OnLevelComplete()
 	{

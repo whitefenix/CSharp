@@ -10,6 +10,7 @@ public class MusicScript : MonoBehaviour {
     public AudioClip baseClip;
     public AudioClip choirClip;
     public AudioClip deadClip;
+    public AudioClip menuClip;
 
     private AudioClip mainClip;
     private AudioClip offClip;
@@ -30,7 +31,9 @@ public class MusicScript : MonoBehaviour {
 
     private bool fadeIn = false;
     public bool isDead = false;
+    public bool isDone = false;
     private bool deadMusicPlaying = false;
+    private bool menuMusicPlaying = false;
 
     // Use this for initialization
     void Start () {
@@ -60,7 +63,19 @@ public class MusicScript : MonoBehaviour {
 
     //Update is called once per frame
     void Update () {
-        if (isDead)
+        if (isDone)
+        {
+            if (!menuMusicPlaying)
+            {              
+                baseSource.clip = menuClip;
+                baseSource.time = 0.0f;
+                baseSource.Play();
+                mainSource.Stop();
+                offSource.Stop();
+                menuMusicPlaying = true;
+            } 
+        }
+        else if (isDead)
         {
             if (!deadMusicPlaying)
             {
