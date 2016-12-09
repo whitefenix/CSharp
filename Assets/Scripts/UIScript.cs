@@ -341,6 +341,9 @@ public class UIScript : MonoBehaviour
 
 	public void closePauseMenu()
 	{
+		//close control menu if open
+		GameObject.Find ("EventSystem").GetComponent<MainMenu> ().CloseAbout ();
+
 		pauseMenu.SetActive (false);
 		Time.timeScale = 1.0f;
 	}
